@@ -4,4 +4,4 @@ COPY ./target/set09803-devops-group-18-1.0-SNAPSHOT-jar-with-dependencies.jar /t
 
 WORKDIR /tmp
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "db:3306"]

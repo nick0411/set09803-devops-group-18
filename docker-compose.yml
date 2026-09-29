@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # MySQL Database Container
+  db:
+    build: db/.
+    container_name: world-db
+    restart: always
+    ports:
+      - "3306:3306"
+    networks:
+      - devops-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Java Application Container
+  app:
+    build: .
+    container_name: devops-app
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - devops-net
+
+# Dedicated Bridge Network
+networks:
+  devops-net:
+    driver: bridge
