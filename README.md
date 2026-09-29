@@ -42,7 +42,7 @@ This repository contains a containerized Java 17 reporting application that proc
 
 # Project Governance & Methodology
 
-* Code of Conduct: Refer to CODE_OF_CONDUCT.md for team collaboration rules and conflict resolution policies.
+* Code of Conduct: Refer to [Code of Conduct](CODE_OF_CONDUCT.md) for team collaboration rules and conflict resolution policies.
 * Branching Strategy: We follow the GitFlow model (master, develop, release, and feature/*).
 * Task Tracking: Integrated with Zube.io for User Stories, Backlog management, and Sprint Tracking.
 
