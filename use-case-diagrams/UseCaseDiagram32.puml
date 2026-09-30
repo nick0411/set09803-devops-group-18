@@ -1,0 +1,49 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 32 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Linguistic Researcher" as Researcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce Global Language Report" as UC_LanguageReport
+    usecase "Query World Population" as UC_QueryWorld
+    usecase "Query Language Speaker Data" as UC_QueryLanguages
+    usecase "Calculate World Percentages" as UC_CalcPercentages
+    usecase "Display Error Message" as UC_Error
+}
+
+' Primary Actor Interactions
+Researcher --> UC_LanguageReport
+
+' Sub-task dependencies (Includes)
+UC_LanguageReport .> UC_QueryWorld : <<include>>
+UC_LanguageReport .> UC_QueryLanguages : <<include>>
+UC_LanguageReport .> UC_CalcPercentages : <<include>>
+
+' System Actor Interactions
+UC_QueryWorld --> DB
+UC_QueryLanguages --> DB
+
+' Failure Extension
+UC_LanguageReport <.. UC_Error : <<extend>>\n(Database Connection\nFailure)
+
+' Notes
+note right of UC_LanguageReport
+  Generates population report for:
+  - Chinese
+  - English
+  - Hindi
+  - Spanish
+  - Arabic
+  Sorted descending with world %
+end note
+
+note bottom of UC_Error
+  Triggered if MySQL database
+  is unreachable or data is missing
+end note
+
+@enduml
