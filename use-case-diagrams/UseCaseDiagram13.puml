@@ -1,0 +1,52 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 13 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Population Researcher" as Researcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce Top N Continent City Report" as UC_CityReport
+    usecase "Receive Continent and Value of N" as UC_GetInput
+    usecase "Query Cities in Continent" as UC_QueryCities
+    usecase "Sort Cities by Population" as UC_SortCities
+    usecase "Select Top N Cities" as UC_SelectTopN
+    usecase "Display Error Message" as UC_Error
+}
+
+' Primary Actor Interactions
+Researcher --> UC_CityReport
+
+' Sub-task dependencies (Includes)
+UC_CityReport .> UC_GetInput : <<include>>
+UC_CityReport .> UC_QueryCities : <<include>>
+UC_CityReport .> UC_SortCities : <<include>>
+UC_CityReport .> UC_SelectTopN : <<include>>
+
+' System Actor Interactions
+UC_QueryCities --> DB
+
+' Failure Extensions
+UC_CityReport <.. UC_Error : <<extend>>\n(Invalid Input or\nDatabase Failure)
+
+' Notes
+note right of UC_CityReport
+  Generates top N populated
+  cities in a specified continent.
+  Report contains:
+  - Name
+  - Country
+  - District
+  - Population
+  Sorted by population descending
+end note
+
+note bottom of UC_Error
+  Triggered if N or continent is invalid,
+  MySQL database is unreachable,
+  or required city data is missing
+end note
+
+@enduml
