@@ -1,0 +1,50 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 31 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Data Researcher" as Researcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Retrieve City Population" as UC_CityPopulation
+    usecase "Validate City" as UC_ValidateCity
+    usecase "Query City Population Data" as UC_QueryCity
+    usecase "Display Error Message" as UC_Error
+}
+
+' Primary Actor Interactions
+Researcher --> UC_CityPopulation
+
+' Sub-task dependencies (Includes)
+UC_CityPopulation .> UC_ValidateCity : <<include>>
+UC_CityPopulation .> UC_QueryCity : <<include>>
+
+' System Actor Interactions
+UC_QueryCity --> DB
+
+' Failure Extension
+UC_CityPopulation <.. UC_Error : <<extend>>\n(Invalid City or\nDatabase Failure)
+
+' Notes
+note right of UC_CityPopulation
+  Retrieves the population
+  of a selected city for
+  municipal population analysis
+end note
+
+note right of UC_QueryCity
+  Queries the population value
+  for the selected city
+  from the database
+end note
+
+note bottom of UC_Error
+  Triggered if the city
+  is invalid, MySQL database
+  is unreachable, or required
+  population data is missing
+end note
+
+@enduml

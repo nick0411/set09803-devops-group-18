@@ -1,0 +1,50 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 30 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Data Researcher" as Researcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Retrieve District Population" as UC_DistrictPopulation
+    usecase "Validate District" as UC_ValidateDistrict
+    usecase "Query District Population Data" as UC_QueryDistrict
+    usecase "Display Error Message" as UC_Error
+}
+
+' Primary Actor Interactions
+Researcher --> UC_DistrictPopulation
+
+' Sub-task dependencies (Includes)
+UC_DistrictPopulation .> UC_ValidateDistrict : <<include>>
+UC_DistrictPopulation .> UC_QueryDistrict : <<include>>
+
+' System Actor Interactions
+UC_QueryDistrict --> DB
+
+' Failure Extension
+UC_DistrictPopulation <.. UC_Error : <<extend>>\n(Invalid District or\nDatabase Failure)
+
+' Notes
+note right of UC_DistrictPopulation
+  Retrieves the population
+  of a selected district for
+  local administrative analysis
+end note
+
+note right of UC_QueryDistrict
+  Queries the population value
+  for the selected district
+  from the database
+end note
+
+note bottom of UC_Error
+  Triggered if the district
+  is invalid, MySQL database
+  is unreachable, or required
+  population data is missing
+end note
+
+@enduml
