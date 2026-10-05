@@ -1,0 +1,54 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 25 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Demographic Researcher" as Researcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce Country Population Report" as UC_CountryReport
+    usecase "Query Total Population" as UC_QueryTotal
+    usecase "Query Urban Population" as UC_QueryUrban
+    usecase "Calculate Rural Population" as UC_CalcRural
+    usecase "Display Error Message" as UC_Error
+}
+
+' Primary Actor Interactions
+Researcher --> UC_CountryReport
+
+' Sub-task dependencies (Includes)
+UC_CountryReport .> UC_QueryTotal : <<include>>
+UC_CountryReport .> UC_QueryUrban : <<include>>
+UC_CountryReport .> UC_CalcRural : <<include>>
+
+' System Actor Interactions
+UC_QueryTotal --> DB
+UC_QueryUrban --> DB
+
+' Failure Extension
+UC_CountryReport <.. UC_Error : <<extend>>\n(Database Connection\nFailure)
+
+' Notes
+note right of UC_CountryReport
+  Generates population report for
+  each country showing:
+  - Total Population
+  - Urban Population
+  - Rural Population
+end note
+
+note right of UC_CalcRural
+  Rural Population =
+  Total Population -
+  Urban Population
+end note
+
+note bottom of UC_Error
+  Triggered if MySQL database
+  is unreachable or required
+  population data is missing
+end note
+
+@enduml

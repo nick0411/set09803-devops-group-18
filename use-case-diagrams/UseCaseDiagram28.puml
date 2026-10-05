@@ -1,0 +1,52 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 28 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Data Researcher" as Researcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Retrieve Region Population" as UC_RegionPopulation
+    usecase "Validate Region" as UC_ValidateRegion
+    usecase "Query Country Population Data" as UC_QueryCountries
+    usecase "Calculate Total Region Population" as UC_CalcRegion
+    usecase "Display Error Message" as UC_Error
+}
+
+' Primary Actor Interactions
+Researcher --> UC_RegionPopulation
+
+' Sub-task dependencies (Includes)
+UC_RegionPopulation .> UC_ValidateRegion : <<include>>
+UC_RegionPopulation .> UC_QueryCountries : <<include>>
+UC_RegionPopulation .> UC_CalcRegion : <<include>>
+
+' System Actor Interactions
+UC_QueryCountries --> DB
+
+' Failure Extension
+UC_RegionPopulation <.. UC_Error : <<extend>>\n(Invalid Region or\nDatabase Failure)
+
+' Notes
+note right of UC_RegionPopulation
+  Retrieves the total population
+  of a selected region for
+  regional population analysis
+end note
+
+note right of UC_CalcRegion
+  Region Population =
+  Sum of populations of all
+  countries in the region
+end note
+
+note bottom of UC_Error
+  Triggered if the region
+  is invalid, MySQL database
+  is unreachable, or required
+  population data is missing
+end note
+
+@enduml
