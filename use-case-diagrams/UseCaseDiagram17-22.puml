@@ -1,0 +1,63 @@
+@startuml
+' SET09803 DevOps Coursework - Requirements 17-22 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Political Scientist" as PolScientist
+actor "Government Researcher" as GovResearcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce All Capital Cities in the World Report" as UseCase17
+    usecase "Produce All Capital Cities in a Continent Report" as UseCase18
+    usecase "Produce All Capital Cities in a Region Report" as UseCase19
+    usecase "Produce Top N Capital Cities in the World Report" as UseCase20
+    usecase "Produce Top N Capital Cities in a Continent Report" as UseCase21
+    usecase "Produce Top N Capital Cities in a Region Report" as UseCase22
+    usecase "Produce Capital City Report" as UseCaseReport
+    usecase "Query Capital City Data" as UseCaseQuery
+    usecase "Sort by Population" as UseCaseSort
+    usecase "Display Error Message" as UseCaseError
+}
+
+' Primary Actor Interactions
+PolScientist --> UseCase17
+PolScientist --> UseCase18
+PolScientist --> UseCase19
+GovResearcher --> UseCase20
+GovResearcher --> UseCase21
+GovResearcher --> UseCase22
+
+' All six reports are different capital city reports
+UseCase17 --|> UseCaseReport
+UseCase18 --|> UseCaseReport
+UseCase19 --|> UseCaseReport
+UseCase20 --|> UseCaseReport
+UseCase21 --|> UseCaseReport
+UseCase22 --|> UseCaseReport
+
+' Sub-task dependencies (Includes)
+UseCaseReport .> UseCaseQuery : <<include>>
+UseCaseReport .> UseCaseSort : <<include>>
+
+' System Actor Interactions
+UseCaseQuery --> DB
+
+' Failure Extension
+UseCaseQuery <.. UseCaseError : <<extend>>\n(Database Connection\nFailure)
+
+' Notes
+note right of UseCaseReport
+  Generates reports listing capital city name,
+  country and population, largest first.
+  Reports 18-19 and 21-22 also validate the continent
+  or region, and reports 20-22 validate N.
+end note
+
+note bottom of UseCaseError
+  Triggered if MySQL database
+  is unreachable or data is missing
+end note
+
+@enduml
