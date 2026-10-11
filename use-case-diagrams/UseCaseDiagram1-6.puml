@@ -1,0 +1,20 @@
+@startuml
+left to right direction
+actor "Data Analyst / User" as user
+
+rectangle "World Population Reporting System" {
+    usecase "UC1: All Countries in World by Population" as UC1
+    usecase "UC2: All Countries in Continent by Population" as UC2
+    usecase "UC3: All Countries in Region by Population" as UC3
+    usecase "UC4: Top N Populated Countries in World" as UC4
+    usecase "UC5: Top N Populated Countries in Continent" as UC5
+    usecase "UC6: Top N Populated Countries in Region" as UC6
+}
+
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+@enduml
