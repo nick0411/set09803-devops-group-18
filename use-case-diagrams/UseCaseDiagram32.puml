@@ -1,49 +1,47 @@
 @startuml
-' SET09803 DevOps Coursework - Requirement 32 Use Case Diagram
+' SET09803 DevOps Coursework - Use Case 32
+' Produce a Report on Global Language Distribution
 
 left to right direction
 skinparam packageStyle rectangle
+skinparam shadowing false
 
 actor "Linguistic Researcher" as Researcher
 rectangle "Database System" as DB << System >>
 
 rectangle "World Population Reporting System" {
-    usecase "Produce Global Language Report" as UC_LanguageReport
-    usecase "Query World Population" as UC_QueryWorld
-    usecase "Query Language Speaker Data" as UC_QueryLanguages
-    usecase "Calculate World Percentages" as UC_CalcPercentages
-    usecase "Display Error Message" as UC_Error
+  usecase "Request Global\nLanguage Report" as RequestReport
+  usecase "Retrieve Total World\nPopulation" as RetrievePopulation
+  usecase "Retrieve Speaker Data for\nChinese, English, Hindi,\nSpanish and Arabic" as RetrieveSpeakers
+  usecase "Calculate Speaker Percentages\nof World Population" as CalculatePercentages
+  usecase "Sort Languages by\nSpeaker Count" as SortLanguages
+  usecase "Display or Export\nLanguage Report" as PresentReport
+  usecase "Handle Unavailable\nLanguage Data" as HandleUnavailable
+  usecase "Log Data Access Error" as LogError
 }
 
-' Primary Actor Interactions
-Researcher --> UC_LanguageReport
+Researcher --> RequestReport
+Researcher --> PresentReport
 
-' Sub-task dependencies (Includes)
-UC_LanguageReport .> UC_QueryWorld : <<include>>
-UC_LanguageReport .> UC_QueryLanguages : <<include>>
-UC_LanguageReport .> UC_CalcPercentages : <<include>>
+RequestReport .> RetrievePopulation : <<include>>
+RequestReport .> RetrieveSpeakers : <<include>>
+RequestReport .> CalculatePercentages : <<include>>
+RequestReport .> SortLanguages : <<include>>
+RequestReport .> PresentReport : <<include>>
 
-' System Actor Interactions
-UC_QueryWorld --> DB
-UC_QueryLanguages --> DB
+RetrievePopulation --> Database
+RetrieveSpeakers --> Database
 
-' Failure Extension
-UC_LanguageReport <.. UC_Error : <<extend>>\n(Database Connection\nFailure)
+HandleUnavailable .> RetrievePopulation : <<extend>>\n[database unavailable]
+HandleUnavailable .> RetrieveSpeakers : <<extend>>\n[data missing or database unavailable]
+HandleUnavailable .> LogError : <<include>>
+HandleUnavailable --> Researcher : language data unavailable
 
-' Notes
-note right of UC_LanguageReport
-  Generates population report for:
-  - Chinese
-  - English
-  - Hindi
-  - Spanish
-  - Arabic
-  Sorted descending with world %
-end note
-
-note bottom of UC_Error
-  Triggered if MySQL database
-  is unreachable or data is missing
+note right of PresentReport
+  Displays Chinese, English, Hindi,
+  Spanish and Arabic from greatest
+  to smallest speaker count, with each
+  language's world-population percentage.
 end note
 
 @enduml

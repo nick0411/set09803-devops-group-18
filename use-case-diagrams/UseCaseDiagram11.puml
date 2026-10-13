@@ -1,0 +1,42 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Local Administrator" as Administrator
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce District City Report" as UC_CityReport
+    usecase "Validate District" as UC_Validate
+    usecase "Query District City Data" as UC_QueryCities
+    usecase "Sort Cities by Population" as UC_SortCities
+    usecase "Display Error Message" as UC_Error
+}
+
+Administrator --> UC_CityReport
+
+UC_CityReport .> UC_Validate : <<include>>
+UC_CityReport .> UC_QueryCities : <<include>>
+UC_CityReport .> UC_SortCities : <<include>>
+
+UC_QueryCities --> DB
+
+UC_CityReport <.. UC_Error : <<extend>>\n(Invalid District or\nDatabase Failure)
+
+note right of UC_CityReport
+  Generates a report of all
+  cities in the selected district:
+  - City Name
+  - Population
+  Sorted largest to smallest
+end note
+
+note bottom of UC_Error
+  Triggered if the district
+  is invalid, MySQL database
+  is unreachable, or city
+  data is missing
+end note
+
+@enduml

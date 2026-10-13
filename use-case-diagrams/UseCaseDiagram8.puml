@@ -1,0 +1,43 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Regional Planner" as Planner
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce Continent City Report" as UC_CityReport
+    usecase "Validate Continent" as UC_Validate
+    usecase "Query Continent City Data" as UC_QueryCities
+    usecase "Sort Cities by Population" as UC_SortCities
+    usecase "Display Error Message" as UC_Error
+}
+
+Planner --> UC_CityReport
+
+UC_CityReport .> UC_Validate : <<include>>
+UC_CityReport .> UC_QueryCities : <<include>>
+UC_CityReport .> UC_SortCities : <<include>>
+
+UC_QueryCities --> DB
+
+UC_CityReport <.. UC_Error : <<extend>>\n(Invalid Continent or\nDatabase Failure)
+
+note right of UC_CityReport
+  Generates a report of all
+  cities in the selected continent:
+  - City Name
+  - Country
+  - Population
+  Sorted largest to smallest
+end note
+
+note bottom of UC_Error
+  Triggered if the continent
+  is invalid, MySQL database
+  is unreachable, or city
+  data is missing
+end note
+
+@enduml
