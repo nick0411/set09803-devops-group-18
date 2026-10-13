@@ -1,0 +1,43 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 22 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Government Researcher" as GovResearcher
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce Top N Capital Cities in a Region Report" as UseCase22
+    usecase "Validate Region" as UseCaseValCon
+    usecase "Validate N" as UseCaseValN
+    usecase "Query Capital City Data" as UseCaseQuery
+    usecase "Sort by Population" as UseCaseSort
+    usecase "Keep Top N Capital Cities" as UseCaseTopN
+    usecase "Display Error Message" as UseCaseError
+}
+
+' Primary Actor Interaction
+GovResearcher --> UseCase22
+
+' Sub-task dependencies (Includes)
+UseCase22 .> UseCaseValCon : <<include>>
+UseCase22 .> UseCaseValN : <<include>>
+UseCase22 .> UseCaseQuery : <<include>>
+UseCase22 .> UseCaseSort : <<include>>
+UseCase22 .> UseCaseTopN : <<include>>
+
+' System Actor Interaction
+UseCaseQuery --> DB
+
+' Failure Extensions
+UseCaseValCon <.. UseCaseError : <<extend>>\n(Region not\nrecognised)
+UseCaseValN <.. UseCaseError : <<extend>>\n(N not a positive\nwhole number)
+UseCaseQuery <.. UseCaseError : <<extend>>\n(Database Connection\nFailure)
+
+note bottom of UseCaseError
+  Triggered if the input is invalid or the MySQL
+  database is unreachable or data is missing
+end note
+
+@enduml

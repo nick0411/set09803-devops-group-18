@@ -1,0 +1,38 @@
+@startuml
+' SET09803 DevOps Coursework - Requirement 19 Use Case Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Political Scientist" as PolScientist
+rectangle "Database System" as DB << System >>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce All Capital Cities in a Region Report" as UseCase19
+    usecase "Validate Region" as UseCaseValidate
+    usecase "Query Capital City Data" as UseCaseQuery
+    usecase "Sort by Population" as UseCaseSort
+    usecase "Display Error Message" as UseCaseError
+}
+
+' Primary Actor Interaction
+PolScientist --> UseCase19
+
+' Sub-task dependencies (Includes)
+UseCase19 .> UseCaseValidate : <<include>>
+UseCase19 .> UseCaseQuery : <<include>>
+UseCase19 .> UseCaseSort : <<include>>
+
+' System Actor Interaction
+UseCaseQuery --> DB
+
+' Failure Extensions
+UseCaseValidate <.. UseCaseError : <<extend>>\n(Region not\nrecognised)
+UseCaseQuery <.. UseCaseError : <<extend>>\n(Database Connection\nFailure)
+
+note bottom of UseCaseError
+  Triggered if the input is invalid or the MySQL
+  database is unreachable or data is missing
+end note
+
+@enduml
