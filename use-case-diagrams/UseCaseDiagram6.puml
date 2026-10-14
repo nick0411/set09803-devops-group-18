@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Data Analyst" as user
+actor "Database System" as db <<System>>
+
+rectangle "World Population Reporting System" {
+    usecase "Produce Top N Populated Countries in Region Report" as UC6
+    usecase "Query Country Data by Region" as UC_Query
+    usecase "Filter Top N Results" as UC_Filter
+    usecase "Sort by Population (Descending)" as UC_Sort
+    usecase "Display Error Message" as UC_Error
+}
+
+user --> UC6
+UC6 .> UC_Query : <<include>>
+UC6 .> UC_Filter : <<include>>
+UC6 .> UC_Sort : <<include>>
+UC6 --> db
+UC_Error .> UC6 : <<extend>>
+@enduml
