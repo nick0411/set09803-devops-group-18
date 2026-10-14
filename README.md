@@ -84,3 +84,13 @@ This repository contains a containerized Java 17 reporting application that proc
 | 30 | The population of a district. | No |  |
 | 31 | The population of a city. | No |  |
 | 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | No |  |
+
+| Matriculation Number | Code Review 1 | Code Review 2 |
+| :--- | :--- | :--- |
+| 40841082 | 17 | - |
+| 40841050 | 17 | - |
+| 40841051 | 17 | - |
+| 40840488 | 17 | - |
+| 40843780 | 17 | - |
+| 40841049 | 15 | - |
+| **Total** | **100** | **-** |
