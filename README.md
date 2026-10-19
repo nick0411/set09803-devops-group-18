@@ -48,7 +48,7 @@ This repository contains a containerized Java 17 reporting application that proc
 
 # Coursework Requirements Status
 
-    0 requirements out of 32 have been implemented (0.0%).
+    1 requirements out of 32 have been implemented (3.12%).
 
 | ID | Requirement Name | Met | Screenshot |
 | --- | --- | --- | --- |
@@ -83,7 +83,7 @@ This repository contains a containerized Java 17 reporting application that proc
 | 29 | The population of a country. | No |  |
 | 30 | The population of a district. | No |  |
 | 31 | The population of a city. | No |  |
-| 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | No |  |
+| 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | Yes |![img.png](img.png)|
 
 | Matriculation Number | Code Review 1 | Code Review 2 |
 | :--- | :--- | :--- |
