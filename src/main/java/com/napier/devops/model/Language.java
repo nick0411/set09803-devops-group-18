@@ -14,7 +14,7 @@ public class Language {
         this.worldPercentage = worldPercentage;
     }
 
-    // Getters
+    // Getters and Setters
     public String getName() {
         return name;
     }
@@ -23,6 +23,18 @@ public class Language {
     }
     public double getWorldPercentage() {
         return worldPercentage;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTotalSpeakers(long totalSpeakers) {
+        this.totalSpeakers = totalSpeakers;
+    }
+
+    public void setWorldPercentage(double worldPercentage) {
+        this.worldPercentage = worldPercentage;
     }
 
     @Override
