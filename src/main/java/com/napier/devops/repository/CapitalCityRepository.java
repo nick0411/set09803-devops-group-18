@@ -12,7 +12,6 @@ public class CapitalCityRepository {
 
     /**
      * Requirement 17: All capital cities in the world, largest population to smallest.
-     * @return list of capital cities sorted by population descending
      */
     public List<CapitalCity> getAllCapitalsWorld() {
         List<CapitalCity> capitals = new ArrayList<>();
@@ -30,6 +29,35 @@ public class CapitalCityRepository {
                         results.getString("CapitalName"),
                         results.getString("CountryName"),
                         results.getLong("Population")));
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to get capital cities: " + e.getMessage());
+        }
+
+        return capitals;
+    }
+    /**
+     * Requirement 18: All capital cities in a continent, largest population to smallest.
+     */
+    public List<CapitalCity> getAllCapitalsContinent(String continent) {
+        List<CapitalCity> capitals = new ArrayList<>();
+
+        String sql = "SELECT city.Name AS CapitalName, country.Name AS CountryName, city.Population " +
+                "FROM country " +
+                "JOIN city ON country.Capital = city.ID " +
+                "WHERE country.Continent = ? " +
+                "ORDER BY city.Population DESC";
+
+        try (PreparedStatement myQuery = con.prepareStatement(sql)) {
+            myQuery.setString(1, continent);
+
+            try (ResultSet results = myQuery.executeQuery()) {
+                while (results.next()) {
+                    capitals.add(new CapitalCity(
+                            results.getString("CapitalName"),
+                            results.getString("CountryName"),
+                            results.getLong("Population")));
+                }
             }
         } catch (SQLException e) {
             System.err.println("Failed to get capital cities: " + e.getMessage());
