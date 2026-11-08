@@ -123,4 +123,35 @@ public class CapitalCityRepository {
 
         return capitals;
     }
+    /**
+     * Requirement 21: Top N capital cities in a continent.
+     */
+    public List<CapitalCity> getTopNCapitalsContinent(String continent, int n) {
+        List<CapitalCity> capitals = new ArrayList<>();
+
+        String sql = "SELECT city.Name AS CapitalName, country.Name AS CountryName, city.Population " +
+                "FROM country " +
+                "JOIN city ON country.Capital = city.ID " +
+                "WHERE country.Continent = ? " +
+                "ORDER BY city.Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement myQuery = con.prepareStatement(sql)) {
+            myQuery.setString(1, continent);
+            myQuery.setInt(2, n);
+
+            try (ResultSet results = myQuery.executeQuery()) {
+                while (results.next()) {
+                    capitals.add(new CapitalCity(
+                            results.getString("CapitalName"),
+                            results.getString("CountryName"),
+                            results.getLong("Population")));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to get capital cities: " + e.getMessage());
+        }
+
+        return capitals;
+    }
 }
