@@ -94,4 +94,37 @@ public class CityRepositoryTest {
         }
     }
 
+    @Test
+    public void testTopNCitiesCountry() {
+        DatabaseHandler db = new DatabaseHandler();
+        db.connect("localhost:3306");
+
+        try {
+            Connection con = db.getConnection();
+            assertNotNull(con, "Database connection failed");
+
+            CityRepository repo = new CityRepository(con);
+            List<City> cities = repo.getTopNCitiesCountry("MMR", 5);
+
+            assertEquals(5, cities.size(),
+                    "Expected exactly 5 cities in Myanmar");
+
+            for (int i = 0; i < cities.size(); i++) {
+                assertEquals("MMR", cities.get(i).getCountry(),
+                        "Every city should belong to Myanmar");
+
+                if (i > 0) {
+                    assertTrue(
+                            cities.get(i - 1).getPopulation()
+                                    >= cities.get(i).getPopulation(),
+                            "Cities should be sorted by population"
+                    );
+                }
+            }
+        } finally {
+            db.disconnect();
+        }
+    }
+
+
 }

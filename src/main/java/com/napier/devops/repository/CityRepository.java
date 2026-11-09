@@ -125,5 +125,40 @@ public class CityRepository {
         return cities;
     }
 
+    /**
+     * Requirement 15:
+     * Get the top N populated cities in a country.
+     */
+    public List<City> getTopNCitiesCountry(String countryCode, int n) {
+        List<City> cities = new ArrayList<>();
+
+        String sql = "SELECT Name, CountryCode, District, Population " +
+                "FROM city " +
+                "WHERE CountryCode = ? " +
+                "ORDER BY Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, countryCode);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    String name = rset.getString("Name");
+                    String country = rset.getString("CountryCode");
+                    String district = rset.getString("District");
+                    long population = rset.getLong("Population");
+
+                    cities.add(new City(name, country, district, population));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by country: "
+                    + e.getMessage());
+        }
+
+        return cities;
+    }
+
 
 }
