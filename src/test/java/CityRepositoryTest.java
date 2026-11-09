@@ -65,4 +65,33 @@ public class CityRepositoryTest {
         }
     }
 
+
+    @Test
+    public void testTopNCitiesRegion() {
+        DatabaseHandler db = new DatabaseHandler();
+        db.connect("localhost:3306");
+
+        try {
+            Connection con = db.getConnection();
+            assertNotNull(con, "Database connection failed");
+
+            CityRepository repo = new CityRepository(con);
+            List<City> cities =
+                    repo.getTopNCitiesRegion("Southeast Asia", 5);
+
+            assertEquals(5, cities.size(),
+                    "Expected exactly 5 cities in Southeast Asia");
+
+            for (int i = 1; i < cities.size(); i++) {
+                assertTrue(
+                        cities.get(i - 1).getPopulation()
+                                >= cities.get(i).getPopulation(),
+                        "Cities should be sorted by population"
+                );
+            }
+        } finally {
+            db.disconnect();
+        }
+    }
+
 }

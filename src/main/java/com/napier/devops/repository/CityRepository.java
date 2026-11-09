@@ -51,7 +51,6 @@ public class CityRepository {
 
     }
 
-
     /**
      * Requirement 13:
      * Get the top N populated cities in a continent.
@@ -83,6 +82,43 @@ public class CityRepository {
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving top N cities by continent: "
+                    + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    /**
+     * Requirement 14:
+     * Get the top N populated cities in a region.
+     */
+    public List<City> getTopNCitiesRegion(String region, int n) {
+        List<City> cities = new ArrayList<>();
+
+        String sql = "SELECT city.Name, city.CountryCode, " +
+                "city.District, city.Population " +
+                "FROM city " +
+                "JOIN country ON city.CountryCode = country.Code " +
+                "WHERE country.Region = ? " +
+                "ORDER BY city.Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    String name = rset.getString("Name");
+                    String country = rset.getString("CountryCode");
+                    String district = rset.getString("District");
+                    long population = rset.getLong("Population");
+
+                    cities.add(new City(name, country, district, population));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by region: "
                     + e.getMessage());
         }
 
