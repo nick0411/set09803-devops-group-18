@@ -126,5 +126,38 @@ public class CityRepositoryTest {
         }
     }
 
+    @Test
+    public void testTopNCitiesDistrict() {
+        DatabaseHandler db = new DatabaseHandler();
+        db.connect("localhost:3306");
+
+        try {
+            Connection con = db.getConnection();
+            assertNotNull(con, "Database connection failed");
+
+            CityRepository repo = new CityRepository(con);
+            List<City> cities =
+                    repo.getTopNCitiesDistrict("California", 5);
+
+            assertEquals(5, cities.size(),
+                    "Expected exactly 5 cities in California");
+
+            for (int i = 0; i < cities.size(); i++) {
+                assertEquals("California", cities.get(i).getDistrict(),
+                        "Every city should belong to California");
+
+                if (i > 0) {
+                    assertTrue(
+                            cities.get(i - 1).getPopulation()
+                                    >= cities.get(i).getPopulation(),
+                            "Cities should be sorted by population"
+                    );
+                }
+            }
+        } finally {
+            db.disconnect();
+        }
+    }
+
 
 }
