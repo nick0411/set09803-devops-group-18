@@ -48,6 +48,46 @@ public class CityRepository {
 
 
         return cities;
+
     }
+
+
+    /**
+     * Requirement 13:
+     * Get the top N populated cities in a continent.
+     */
+    public List<City> getTopNCitiesContinent(String continent, int n) {
+        List<City> cities = new ArrayList<>();
+
+        String sql = "SELECT city.Name, city.CountryCode, " +
+                "city.District, city.Population " +
+                "FROM city " +
+                "JOIN country ON city.CountryCode = country.Code " +
+                "WHERE country.Continent = ? " +
+                "ORDER BY city.Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    String name = rset.getString("Name");
+                    String country = rset.getString("CountryCode");
+                    String district = rset.getString("District");
+                    long population = rset.getLong("Population");
+
+                    cities.add(new City(name, country, district, population));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by continent: "
+                    + e.getMessage());
+        }
+
+        return cities;
+    }
+
 
 }
