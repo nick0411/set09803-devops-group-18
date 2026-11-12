@@ -1,12 +1,15 @@
 package com.napier.devops;
 
 import com.napier.devops.config.DatabaseHandler;
+import com.napier.devops.model.CapitalCity;
 import com.napier.devops.model.City;
 import com.napier.devops.model.Language;
 import com.napier.devops.model.Population;
+import com.napier.devops.reportformat.CapitalCityReport;
 import com.napier.devops.reportformat.CityReport;
 import com.napier.devops.reportformat.LanguageReport;
 import com.napier.devops.reportformat.PopulationReport;
+import com.napier.devops.repository.CapitalCityRepository;
 import com.napier.devops.repository.CityRepository;
 import com.napier.devops.repository.LanguageRepository;
 import com.napier.devops.repository.PopulationRepository;
@@ -59,6 +62,39 @@ public class App {
             System.out.println("\n--- Req 11: All Cities in a Specific District ---");
             List<City> districtCities = cityRepo.getAllCitiesDistrict("England");
             CityReport.print(districtCities);
+
+            // Capital City Reports (Req 17 - 22)
+            CapitalCityRepository capitalRepo = new CapitalCityRepository(con);
+
+            // Req 17: All capital cities in the world
+            System.out.println("\n--- Req 17: All Capital Cities in the World ---");
+            List<CapitalCity> worldCapitals = capitalRepo.getAllCapitalsWorld();
+            CapitalCityReport.print(worldCapitals);
+
+            // Req 18: All capital cities in a continent (e.g., Asia)
+            System.out.println("\n--- Req 18: All Capital Cities in a Continent ---");
+            List<CapitalCity> continentCapitals = capitalRepo.getAllCapitalsContinent("Asia");
+            CapitalCityReport.print(continentCapitals);
+
+            // Req 19: All capital cities in a region (e.g., Southeast Asia)
+            System.out.println("\n--- Req 19: All Capital Cities in a Region ---");
+            List<CapitalCity> regionCapitals = capitalRepo.getAllCapitalsRegion("Southeast Asia");
+            CapitalCityReport.print(regionCapitals);
+
+            // Req 20: Top N populated capital cities in the world (e.g., Top 10)
+            System.out.println("\n--- Req 20: Top n Capital Cities in the World ---");
+            List<CapitalCity> topWorldCapitals = capitalRepo.getTopNCapitalsWorld(10);
+            CapitalCityReport.print(topWorldCapitals);
+
+            // Req 21: Top N populated capital cities in a continent (e.g., Top 5 in Asia)
+            System.out.println("\n--- Req 21: Top n Capital Cities in a Continent ---");
+            List<CapitalCity> topContinentCapitals = capitalRepo.getTopNCapitalsContinent("Asia", 5);
+            CapitalCityReport.print(topContinentCapitals);
+
+            // Req 22: Top N populated capital cities in a region (e.g., Top 5 in Southeast Asia)
+            System.out.println("\n--- Req 22: Top n Capital Cities in a region ---");
+            List<CapitalCity> topRegionCapitals = capitalRepo.getTopNCapitalsRegion("Southeast Asia", 5);
+            CapitalCityReport.print(topRegionCapitals);
 
             // Population Reports (Req 23 - 31)
             PopulationRepository populationRepo = new PopulationRepository(con);

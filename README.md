@@ -48,7 +48,7 @@ This repository contains a containerized Java 17 reporting application that proc
 
 # Coursework Requirements Status
 
-    1 requirements out of 32 have been implemented (3.12%).
+    21 requirements out of 32 have been implemented (65.625%).
 
 | ID | Requirement Name | Met | Screenshot |
 | --- | --- | --- | --- |
@@ -68,12 +68,12 @@ This repository contains a containerized Java 17 reporting application that proc
 | 14 | The top N populated cities in a region where N is provided by the user. | No |  |
 | 15 | The top N populated cities in a country where N is provided by the user. | No |  |
 | 16 | The top N populated cities in a district where N is provided by the user. | No |  |
-| 17 | All the capital cities in the world organised by largest population to smallest. | No |  |
-| 18 | All the capital cities in a continent organised by largest population to smallest. | No |  |
-| 19 | All the capital cities in a region organised by largest to smallest. | No |  |
-| 20 | The top N populated capital cities in the world where N is provided by the user. | No |  |
-| 21 | The top N populated capital cities in a continent where N is provided by the user. | No |  |
-| 22 | The top N populated capital cities in a region where N is provided by the user. | No |  |
+| 17 | All the capital cities in the world organised by largest population to smallest. | Yes |![req17_1.png](img/req17_1.png)![req17_2.png](img/req17_2.png)|
+| 18 | All the capital cities in a continent organised by largest population to smallest. | Yes |![req18_1.png](img/req18_1.png)![req18_2.png](img/req18_2.png)|
+| 19 | All the capital cities in a region organised by largest to smallest. | Yes |![req19_1.png](img/req19_1.png)![req19_2.png](img/req19_2.png)|
+| 20 | The top N populated capital cities in the world where N is provided by the user. | Yes |![req20_1.png](img/req20_1.png)![req20_2.png](img/req20_2.png)|
+| 21 | The top N populated capital cities in a continent where N is provided by the user. | Yes |![req21.png](img/req21.png)|
+| 22 | The top N populated capital cities in a region where N is provided by the user. | Yes |![req22.png](img/req22.png)|
 | 23 | Population of people living in and outside cities in each continent. | Yes |![img_1.png](img/req23.png)|
 | 24 | Population of people living in and outside cities in each region. | Yes |![req24_1.png](img/req24_1.png)![req24_2.png](img/req24_2.png)|
 | 25 | Population of people living in and outside cities in each country. | Yes |![req25_1.png](img/req25_1.png)![req25_2.png](img/req25_2.png)|
