@@ -3,16 +3,16 @@ package com.napier.devops;
 import com.napier.devops.config.DatabaseHandler;
 import com.napier.devops.model.CapitalCity;
 import com.napier.devops.model.City;
+import com.napier.devops.model.Country;
 import com.napier.devops.model.Language;
 import com.napier.devops.model.Population;
 import com.napier.devops.reportformat.CapitalCityReport;
 import com.napier.devops.reportformat.CityReport;
+import com.napier.devops.reportformat.CountryReport;
 import com.napier.devops.reportformat.LanguageReport;
-import com.napier.devops.reportformat.PopulationReport;
-import com.napier.devops.repository.CapitalCityRepository;
 import com.napier.devops.repository.CityRepository;
+import com.napier.devops.repository.CountryRepository;
 import com.napier.devops.repository.LanguageRepository;
-import com.napier.devops.repository.PopulationRepository;
 
 import java.sql.Connection;
 import java.util.List;
@@ -37,6 +37,12 @@ public class App {
 
         if (con != null) {
             CityRepository cityRepo = new CityRepository(con);
+            CountryRepository countryRepo = new CountryRepository(con);
+
+            // Country Reports (Your feature implementation)
+            System.out.println("\n--- Country Report: All Countries in the World ---");
+            List<Country> worldCountries = countryRepo.getAllCountriesWorld();
+            CountryReport.print(worldCountries);
 
             // Req 7: All cities in the world (limiting to top 10 for clean sample output, or remove .limit() for all)
             System.out.println("\n--- Req 7: All Cities in the World ---");
