@@ -149,4 +149,135 @@ public class CityRepository {
         }
         return cities;
     }
+
+    // Requirement 12: Top N cities in the world
+    public List<City> getTopNCitiesWorld(int n) {
+        List<City> cities = new ArrayList<>();
+        String sql = "SELECT Name, CountryCode, District, Population " +
+                "FROM city ORDER BY Population DESC LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, n);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(new City(
+                            rset.getString("Name"),
+                            rset.getString("CountryCode"),
+                            rset.getString("District"),
+                            rset.getLong("Population")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities: " + e.getMessage());
+        }
+        return cities;
+    }
+
+    // Requirement 13: Top N cities in a continent
+    public List<City> getTopNCitiesContinent(String continent, int n) {
+        List<City> cities = new ArrayList<>();
+        String sql = "SELECT city.Name, city.CountryCode, city.District, city.Population " +
+                "FROM city JOIN country ON city.CountryCode = country.Code " +
+                "WHERE country.Continent = ? " +
+                "ORDER BY city.Population DESC LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+            stmt.setInt(2, n);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(new City(
+                            rset.getString("Name"),
+                            rset.getString("CountryCode"),
+                            rset.getString("District"),
+                            rset.getLong("Population")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by continent: " + e.getMessage());
+        }
+        return cities;
+    }
+
+    // Requirement 14: Top N cities in a region
+    public List<City> getTopNCitiesRegion(String region, int n) {
+        List<City> cities = new ArrayList<>();
+        String sql = "SELECT city.Name, city.CountryCode, city.District, city.Population " +
+                "FROM city JOIN country ON city.CountryCode = country.Code " +
+                "WHERE country.Region = ? " +
+                "ORDER BY city.Population DESC LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(new City(
+                            rset.getString("Name"),
+                            rset.getString("CountryCode"),
+                            rset.getString("District"),
+                            rset.getLong("Population")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by region: " + e.getMessage());
+        }
+        return cities;
+    }
+
+    // Requirement 15: Top N cities in a country
+    public List<City> getTopNCitiesCountry(String countryCode, int n) {
+        List<City> cities = new ArrayList<>();
+        String sql = "SELECT Name, CountryCode, District, Population " +
+                "FROM city WHERE CountryCode = ? " +
+                "ORDER BY Population DESC LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, countryCode);
+            stmt.setInt(2, n);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(new City(
+                            rset.getString("Name"),
+                            rset.getString("CountryCode"),
+                            rset.getString("District"),
+                            rset.getLong("Population")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by country: " + e.getMessage());
+        }
+        return cities;
+    }
+
+    // Requirement 16: Top N cities in a district
+    public List<City> getTopNCitiesDistrict(String district, int n) {
+        List<City> cities = new ArrayList<>();
+        String sql = "SELECT Name, CountryCode, District, Population " +
+                "FROM city WHERE District = ? " +
+                "ORDER BY Population DESC LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, district);
+            stmt.setInt(2, n);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(new City(
+                            rset.getString("Name"),
+                            rset.getString("CountryCode"),
+                            rset.getString("District"),
+                            rset.getLong("Population")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving top N cities by district: " + e.getMessage());
+        }
+        return cities;
+    }
+
 }
