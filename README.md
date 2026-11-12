@@ -48,16 +48,16 @@ This repository contains a containerized Java 17 reporting application that proc
 
 # Coursework Requirements Status
 
-    21 requirements out of 32 have been implemented (65.625%).
+    27 requirements out of 32 have been implemented (84.375%).
 
 | ID | Requirement Name | Met | Screenshot |
 | --- | --- | --- | --- |
-| 1 | All the countries in the world organised by largest population to smallest. | No |  |
-| 2 | All the countries in a continent organised by largest population to smallest. | No |  |
-| 3 | All the countries in a region organised by largest population to smallest. | No |  |
-| 4 | The top N populated countries in the world where N is provided by the user. | No |  |
-| 5 | The top N populated countries in a continent where N is provided by the user. | No |  |
-| 6 | The top N populated countries in a region where N is provided by the user. | No |  |
+| 1 | All the countries in the world organised by largest population to smallest. | Yes |![req1_1.png](img/req1_1.png)![req1_2.png](img/req1_2.png)|
+| 2 | All the countries in a continent organised by largest population to smallest. | Yes |![req2_1.png](img/req2_1.png)![req2_2.png](img/req2_2.png)|
+| 3 | All the countries in a region organised by largest population to smallest. | Yes |![req3_1.png](img/req3_1.png)![req3_2.png](img/req3_2.png)|
+| 4 | The top N populated countries in the world where N is provided by the user. | Yes |![req4.png](img/req4.png)|
+| 5 | The top N populated countries in a continent where N is provided by the user. | Yes |![req5.png](img/req5.png)|
+| 6 | The top N populated countries in a region where N is provided by the user. | Yes |![req6.png](img/req6.png)|
 | 7 | All the cities in the world organised by largest population to smallest. | Yes |![req7_1.png](img/req7_1.png)![req7_2.png](img/req7_2.png)|
 | 8 | All the cities in a continent organised by largest population to smallest. | Yes |![req8_1.png](img/req8_1.png)![req8_2.png](img/req8_2.png)|
 | 9 | All the cities in a region organised by largest population to smallest. | Yes |![req9_1.png](img/req9_1.png)![req9_2.png](img/req9_2.png)|
@@ -74,7 +74,7 @@ This repository contains a containerized Java 17 reporting application that proc
 | 20 | The top N populated capital cities in the world where N is provided by the user. | Yes |![req20_1.png](img/req20_1.png)![req20_2.png](img/req20_2.png)|
 | 21 | The top N populated capital cities in a continent where N is provided by the user. | Yes |![req21.png](img/req21.png)|
 | 22 | The top N populated capital cities in a region where N is provided by the user. | Yes |![req22.png](img/req22.png)|
-| 23 | Population of people living in and outside cities in each continent. | Yes |![img_1.png](img/req23.png)|
+| 23 | Population of people living in and outside cities in each continent. | Yes |![img23.png](img/req23.png)|
 | 24 | Population of people living in and outside cities in each region. | Yes |![req24_1.png](img/req24_1.png)![req24_2.png](img/req24_2.png)|
 | 25 | Population of people living in and outside cities in each country. | Yes |![req25_1.png](img/req25_1.png)![req25_2.png](img/req25_2.png)|
 | 26 | The population of the world. | Yes |![req26.png](img/req26.png)|

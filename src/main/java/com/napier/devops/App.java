@@ -68,7 +68,6 @@ public class App {
             System.out.println("\n--- Req 4: Top " + topN + " Countries in the World ---");
             CountryReport.print(countryRepo.getTopNCountriesWorld(topN));
 
-            // Req 5 & 6 (Newly Added)
             System.out.println("\n--- Req 5: Top " + topN + " Countries in Continent (" + targetContinent + ") ---");
             CountryReport.print(countryRepo.getTopNCountriesContinent(targetContinent, topN));
 

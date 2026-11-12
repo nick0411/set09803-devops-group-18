@@ -30,7 +30,7 @@ public class CountryReport {
             }
         }
 
-        System.out.printf("| Total Number of Records: %-91d |%n", countries.size());
+        System.out.printf("| Total Number of Records: %-95d |%n", countries.size());
         System.out.println(border);
     }
 }
