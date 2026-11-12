@@ -74,16 +74,16 @@ This repository contains a containerized Java 17 reporting application that proc
 | 20 | The top N populated capital cities in the world where N is provided by the user. | No |  |
 | 21 | The top N populated capital cities in a continent where N is provided by the user. | No |  |
 | 22 | The top N populated capital cities in a region where N is provided by the user. | No |  |
-| 23 | Population of people living in and outside cities in each continent. | No |  |
-| 24 | Population of people living in and outside cities in each region. | No |  |
-| 25 | Population of people living in and outside cities in each country. | No |  |
-| 26 | The population of the world. | No |  |
-| 27 | The population of a continent. | No |  |
-| 28 | The population of a region. | No |  |
-| 29 | The population of a country. | No |  |
-| 30 | The population of a district. | No |  |
-| 31 | The population of a city. | No |  |
-| 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | Yes |![img.png](img.png)|
+| 23 | Population of people living in and outside cities in each continent. | Yes |![img_1.png](img/req23.png)|
+| 24 | Population of people living in and outside cities in each region. | Yes |![req24_1.png](img/req24_1.png)![req24_2.png](img/req24_2.png)|
+| 25 | Population of people living in and outside cities in each country. | Yes |![req25_1.png](img/req25_1.png)![req25_2.png](img/req25_2.png)|
+| 26 | The population of the world. | Yes |![req26.png](img/req26.png)|
+| 27 | The population of a continent. | Yes |![req27.png](img/req27.png)|
+| 28 | The population of a region. | Yes |![req28_1.png](img/req28_1.png)![req28_2.png](img/req28_2.png)|
+| 29 | The population of a country. | Yes |![req29_1.png](img/req29_1.png)![req29_2.png](img/req29_2.png)|
+| 30 | The population of a district. | Yes |![req30_1.png](img/req30_1.png)![req30_2.png](img/req30_2.png)|
+| 31 | The population of a city. | Yes |![req31_1.png](img/req31_1.png)![req31_2.png](img/req31_2.png)|
+| 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | Yes |![img.png](img/req32.png)|
 
 | Matriculation Number | Code Review 1 | Code Review 2 |
 | :--- | :--- | :--- |

@@ -14,8 +14,6 @@ public class PopulationRepository {
 
     /**
      * Requirement 23: Population living / not living in cities per Continent (with %).
-     *
-     * @return List of Population objects per continent sorted by total population descending.
      */
     public List<Population> getContinentPopulationReport() {
         String sql = "SELECT " +
@@ -39,8 +37,6 @@ public class PopulationRepository {
 
     /**
      * Requirement 24: Population living / not living in cities per Region (with %).
-     *
-     * @return List of Population objects per region sorted by total population descending.
      */
     public List<Population> getRegionPopulationReport() {
         String sql = "SELECT " +
@@ -64,8 +60,6 @@ public class PopulationRepository {
 
     /**
      * Requirement 25: Population living / not living in cities per Country (with %).
-     *
-     * @return List of Population objects per country sorted by total population descending.
      */
     public List<Population> getCountryPopulationReport() {
         String sql = "SELECT " +
@@ -90,9 +84,19 @@ public class PopulationRepository {
      * Requirement 26: Total population of the World.
      */
     public List<Population> getWorldTotalPopulation() {
-        String sql = "SELECT 'World' AS Name, SUM(Population) AS TotalPopulation, " +
-                "0 AS CityPopulation, 0 AS CityPercentage, 0 AS NonCityPopulation, 0 AS NonCityPercentage " +
-                "FROM country;";
+        String sql = "SELECT " +
+                "    'World' AS Name, " +
+                "    SUM(c.Population) AS TotalPopulation, " +
+                "    COALESCE(SUM(ci.CityPopulation), 0) AS CityPopulation, " +
+                "    ROUND((COALESCE(SUM(ci.CityPopulation), 0) / SUM(c.Population)) * 100, 2) AS CityPercentage, " +
+                "    (SUM(c.Population) - COALESCE(SUM(ci.CityPopulation), 0)) AS NonCityPopulation, " +
+                "    ROUND(((SUM(c.Population) - COALESCE(SUM(ci.CityPopulation), 0)) / SUM(c.Population)) * 100, 2) AS NonCityPercentage " +
+                "FROM country c " +
+                "LEFT JOIN (" +
+                "    SELECT CountryCode, SUM(Population) AS CityPopulation " +
+                "    FROM city " +
+                "    GROUP BY CountryCode" +
+                ") ci ON c.Code = ci.CountryCode;";
         return executePopulationQuery(sql, "Failed to retrieve World total population");
     }
 
@@ -100,9 +104,21 @@ public class PopulationRepository {
      * Requirement 27: Total population of each Continent.
      */
     public List<Population> getContinentTotalPopulation() {
-        String sql = "SELECT Continent AS Name, SUM(Population) AS TotalPopulation, " +
-                "0 AS CityPopulation, 0 AS CityPercentage, 0 AS NonCityPopulation, 0 AS NonCityPercentage " +
-                "FROM country GROUP BY Continent ORDER BY TotalPopulation DESC;";
+        String sql = "SELECT " +
+                "    c.Continent AS Name, " +
+                "    SUM(c.Population) AS TotalPopulation, " +
+                "    COALESCE(SUM(ci.CityPopulation), 0) AS CityPopulation, " +
+                "    ROUND((COALESCE(SUM(ci.CityPopulation), 0) / SUM(c.Population)) * 100, 2) AS CityPercentage, " +
+                "    (SUM(c.Population) - COALESCE(SUM(ci.CityPopulation), 0)) AS NonCityPopulation, " +
+                "    ROUND(((SUM(c.Population) - COALESCE(SUM(ci.CityPopulation), 0)) / SUM(c.Population)) * 100, 2) AS NonCityPercentage " +
+                "FROM country c " +
+                "LEFT JOIN (" +
+                "    SELECT CountryCode, SUM(Population) AS CityPopulation " +
+                "    FROM city " +
+                "    GROUP BY CountryCode" +
+                ") ci ON c.Code = ci.CountryCode " +
+                "GROUP BY c.Continent " +
+                "ORDER BY TotalPopulation DESC;";
         return executePopulationQuery(sql, "Failed to retrieve Continent total populations");
     }
 
@@ -110,9 +126,21 @@ public class PopulationRepository {
      * Requirement 28: Total population of each Region.
      */
     public List<Population> getRegionTotalPopulation() {
-        String sql = "SELECT Region AS Name, SUM(Population) AS TotalPopulation, " +
-                "0 AS CityPopulation, 0 AS CityPercentage, 0 AS NonCityPopulation, 0 AS NonCityPercentage " +
-                "FROM country GROUP BY Region ORDER BY TotalPopulation DESC;";
+        String sql = "SELECT " +
+                "    c.Region AS Name, " +
+                "    SUM(c.Population) AS TotalPopulation, " +
+                "    COALESCE(SUM(ci.CityPopulation), 0) AS CityPopulation, " +
+                "    ROUND((COALESCE(SUM(ci.CityPopulation), 0) / SUM(c.Population)) * 100, 2) AS CityPercentage, " +
+                "    (SUM(c.Population) - COALESCE(SUM(ci.CityPopulation), 0)) AS NonCityPopulation, " +
+                "    ROUND(((SUM(c.Population) - COALESCE(SUM(ci.CityPopulation), 0)) / SUM(c.Population)) * 100, 2) AS NonCityPercentage " +
+                "FROM country c " +
+                "LEFT JOIN (" +
+                "    SELECT CountryCode, SUM(Population) AS CityPopulation " +
+                "    FROM city " +
+                "    GROUP BY CountryCode" +
+                ") ci ON c.Code = ci.CountryCode " +
+                "GROUP BY c.Region " +
+                "ORDER BY TotalPopulation DESC;";
         return executePopulationQuery(sql, "Failed to retrieve Region total populations");
     }
 
@@ -120,9 +148,20 @@ public class PopulationRepository {
      * Requirement 29: Total population of each Country.
      */
     public List<Population> getCountryTotalPopulation() {
-        String sql = "SELECT Name AS Name, Population AS TotalPopulation, " +
-                "0 AS CityPopulation, 0 AS CityPercentage, 0 AS NonCityPopulation, 0 AS NonCityPercentage " +
-                "FROM country ORDER BY TotalPopulation DESC;";
+        String sql = "SELECT " +
+                "    c.Name AS Name, " +
+                "    c.Population AS TotalPopulation, " +
+                "    COALESCE(ci.CityPopulation, 0) AS CityPopulation, " +
+                "    ROUND((COALESCE(ci.CityPopulation, 0) / c.Population) * 100, 2) AS CityPercentage, " +
+                "    (c.Population - COALESCE(ci.CityPopulation, 0)) AS NonCityPopulation, " +
+                "    ROUND(((c.Population - COALESCE(ci.CityPopulation, 0)) / c.Population) * 100, 2) AS NonCityPercentage " +
+                "FROM country c " +
+                "LEFT JOIN (" +
+                "    SELECT CountryCode, SUM(Population) AS CityPopulation " +
+                "    FROM city " +
+                "    GROUP BY CountryCode" +
+                ") ci ON c.Code = ci.CountryCode " +
+                "ORDER BY TotalPopulation DESC;";
         return executePopulationQuery(sql, "Failed to retrieve Country total populations");
     }
 
@@ -130,9 +169,16 @@ public class PopulationRepository {
      * Requirement 30: Total population of each District.
      */
     public List<Population> getDistrictTotalPopulation() {
-        String sql = "SELECT District AS Name, SUM(Population) AS TotalPopulation, " +
-                "0 AS CityPopulation, 0 AS CityPercentage, 0 AS NonCityPopulation, 0 AS NonCityPercentage " +
-                "FROM city GROUP BY District ORDER BY TotalPopulation DESC;";
+        String sql = "SELECT " +
+                "    District AS Name, " +
+                "    SUM(Population) AS TotalPopulation, " +
+                "    SUM(Population) AS CityPopulation, " +
+                "    100.00 AS CityPercentage, " +
+                "    0 AS NonCityPopulation, " +
+                "    0.00 AS NonCityPercentage " +
+                "FROM city " +
+                "GROUP BY District " +
+                "ORDER BY TotalPopulation DESC;";
         return executePopulationQuery(sql, "Failed to retrieve District total populations");
     }
 
@@ -140,9 +186,15 @@ public class PopulationRepository {
      * Requirement 31: Total population of each City.
      */
     public List<Population> getCityTotalPopulation() {
-        String sql = "SELECT Name AS Name, Population AS TotalPopulation, " +
-                "0 AS CityPopulation, 0 AS CityPercentage, 0 AS NonCityPopulation, 0 AS NonCityPercentage " +
-                "FROM city ORDER BY Population DESC;";
+        String sql = "SELECT " +
+                "    Name AS Name, " +
+                "    Population AS TotalPopulation, " +
+                "    Population AS CityPopulation, " +
+                "    100.00 AS CityPercentage, " +
+                "    0 AS NonCityPopulation, " +
+                "    0.00 AS NonCityPercentage " +
+                "FROM city " +
+                "ORDER BY Population DESC;";
         return executePopulationQuery(sql, "Failed to retrieve City total populations");
     }
 
