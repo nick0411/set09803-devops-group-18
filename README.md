@@ -48,7 +48,7 @@ This repository contains a containerized Java 17 reporting application that proc
 
 # Coursework Requirements Status
 
-    1 requirements out of 32 have been implemented (3.12%).
+    21 requirements out of 32 have been implemented (65.625%).
 
 | ID | Requirement Name | Met | Screenshot |
 | --- | --- | --- | --- |
@@ -58,32 +58,32 @@ This repository contains a containerized Java 17 reporting application that proc
 | 4 | The top N populated countries in the world where N is provided by the user. | No |  |
 | 5 | The top N populated countries in a continent where N is provided by the user. | No |  |
 | 6 | The top N populated countries in a region where N is provided by the user. | No |  |
-| 7 | All the cities in the world organised by largest population to smallest. | No |  |
-| 8 | All the cities in a continent organised by largest population to smallest. | No |  |
-| 9 | All the cities in a region organised by largest population to smallest. | No |  |
-| 10 | All the cities in a country organised by largest population to smallest. | No |  |
-| 11 | All the cities in a district organised by largest population to smallest. | No |  |
+| 7 | All the cities in the world organised by largest population to smallest. | Yes |![req7_1.png](img/req7_1.png)![req7_2.png](img/req7_2.png)|
+| 8 | All the cities in a continent organised by largest population to smallest. | Yes |![req8_1.png](img/req8_1.png)![req8_2.png](img/req8_2.png)|
+| 9 | All the cities in a region organised by largest population to smallest. | Yes |![req9_1.png](img/req9_1.png)![req9_2.png](img/req9_2.png)|
+| 10 | All the cities in a country organised by largest population to smallest. | Yes |![req10_1.png](img/req10_1.png)![req10_2.png](img/req10_2.png)|
+| 11 | All the cities in a district organised by largest population to smallest. | Yes |![req11_1.png](img/req11_1.png)![req11_2.png](img/req11_2.png)|
 | 12 | The top N populated cities in the world where N is provided by the user. | No |  |
 | 13 | The top N populated cities in a continent where N is provided by the user. | No |  |
 | 14 | The top N populated cities in a region where N is provided by the user. | No |  |
 | 15 | The top N populated cities in a country where N is provided by the user. | No |  |
 | 16 | The top N populated cities in a district where N is provided by the user. | No |  |
-| 17 | All the capital cities in the world organised by largest population to smallest. | No |  |
-| 18 | All the capital cities in a continent organised by largest population to smallest. | No |  |
-| 19 | All the capital cities in a region organised by largest to smallest. | No |  |
-| 20 | The top N populated capital cities in the world where N is provided by the user. | No |  |
-| 21 | The top N populated capital cities in a continent where N is provided by the user. | No |  |
-| 22 | The top N populated capital cities in a region where N is provided by the user. | No |  |
-| 23 | Population of people living in and outside cities in each continent. | No |  |
-| 24 | Population of people living in and outside cities in each region. | No |  |
-| 25 | Population of people living in and outside cities in each country. | No |  |
-| 26 | The population of the world. | No |  |
-| 27 | The population of a continent. | No |  |
-| 28 | The population of a region. | No |  |
-| 29 | The population of a country. | No |  |
-| 30 | The population of a district. | No |  |
-| 31 | The population of a city. | No |  |
-| 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | Yes |![img.png](img.png)|
+| 17 | All the capital cities in the world organised by largest population to smallest. | Yes |![req17_1.png](img/req17_1.png)![req17_2.png](img/req17_2.png)|
+| 18 | All the capital cities in a continent organised by largest population to smallest. | Yes |![req18_1.png](img/req18_1.png)![req18_2.png](img/req18_2.png)|
+| 19 | All the capital cities in a region organised by largest to smallest. | Yes |![req19_1.png](img/req19_1.png)![req19_2.png](img/req19_2.png)|
+| 20 | The top N populated capital cities in the world where N is provided by the user. | Yes |![req20_1.png](img/req20_1.png)![req20_2.png](img/req20_2.png)|
+| 21 | The top N populated capital cities in a continent where N is provided by the user. | Yes |![req21.png](img/req21.png)|
+| 22 | The top N populated capital cities in a region where N is provided by the user. | Yes |![req22.png](img/req22.png)|
+| 23 | Population of people living in and outside cities in each continent. | Yes |![img_1.png](img/req23.png)|
+| 24 | Population of people living in and outside cities in each region. | Yes |![req24_1.png](img/req24_1.png)![req24_2.png](img/req24_2.png)|
+| 25 | Population of people living in and outside cities in each country. | Yes |![req25_1.png](img/req25_1.png)![req25_2.png](img/req25_2.png)|
+| 26 | The population of the world. | Yes |![req26.png](img/req26.png)|
+| 27 | The population of a continent. | Yes |![req27.png](img/req27.png)|
+| 28 | The population of a region. | Yes |![req28_1.png](img/req28_1.png)![req28_2.png](img/req28_2.png)|
+| 29 | The population of a country. | Yes |![req29_1.png](img/req29_1.png)![req29_2.png](img/req29_2.png)|
+| 30 | The population of a district. | Yes |![req30_1.png](img/req30_1.png)![req30_2.png](img/req30_2.png)|
+| 31 | The population of a city. | Yes |![req31_1.png](img/req31_1.png)![req31_2.png](img/req31_2.png)|
+| 32 | Language report (Chinese, English, Hindi, Spanish, Arabic with world percentages). | Yes |![img.png](img/req32.png)|
 
 | Matriculation Number | Code Review 1 | Code Review 2 |
 | :--- | :--- | :--- |
