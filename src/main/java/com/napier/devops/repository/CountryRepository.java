@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountryRepository {
-    private Connection con;
+    private final Connection con;
 
     public CountryRepository(Connection con) {
         this.con = con;
@@ -17,15 +17,15 @@ public class CountryRepository {
      */
     public List<Country> getAllCountriesWorld() {
         List<Country> countries = new ArrayList<>();
-        try {
-            Statement stmt = con.createStatement();
-            String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country ORDER BY Population DESC";
-            ResultSet rset = stmt.executeQuery(query);
+        String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country ORDER BY Population DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(query)) {
             while (rset.next()) {
                 countries.add(extractCountry(rset));
             }
-        } catch (Exception e) {
-            System.out.println("Error fetching world countries: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error fetching world countries: " + e.getMessage());
         }
         return countries;
     }
@@ -35,17 +35,17 @@ public class CountryRepository {
      */
     public List<Country> getAllCountriesContinent(String continent) {
         List<Country> countries = new ArrayList<>();
-        try {
-            PreparedStatement pstmt = con.prepareStatement(
-                    "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Continent = ? ORDER BY Population DESC"
-            );
+        String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Continent = ? ORDER BY Population DESC";
+
+        try (PreparedStatement pstmt = con.prepareStatement(query)) {
             pstmt.setString(1, continent);
-            ResultSet rset = pstmt.executeQuery();
-            while (rset.next()) {
-                countries.add(extractCountry(rset));
+            try (ResultSet rset = pstmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(extractCountry(rset));
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Error fetching continent countries: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error fetching continent countries: " + e.getMessage());
         }
         return countries;
     }
@@ -55,17 +55,17 @@ public class CountryRepository {
      */
     public List<Country> getAllCountriesRegion(String region) {
         List<Country> countries = new ArrayList<>();
-        try {
-            PreparedStatement pstmt = con.prepareStatement(
-                    "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Region = ? ORDER BY Population DESC"
-            );
+        String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Region = ? ORDER BY Population DESC";
+
+        try (PreparedStatement pstmt = con.prepareStatement(query)) {
             pstmt.setString(1, region);
-            ResultSet rset = pstmt.executeQuery();
-            while (rset.next()) {
-                countries.add(extractCountry(rset));
+            try (ResultSet rset = pstmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(extractCountry(rset));
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Error fetching region countries: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error fetching region countries: " + e.getMessage());
         }
         return countries;
     }
@@ -75,17 +75,59 @@ public class CountryRepository {
      */
     public List<Country> getTopNCountriesWorld(int n) {
         List<Country> countries = new ArrayList<>();
-        try {
-            PreparedStatement pstmt = con.prepareStatement(
-                    "SELECT Code, Name, Continent, Region, Population, Capital FROM country ORDER BY Population DESC LIMIT ?"
-            );
+        String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country ORDER BY Population DESC LIMIT ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(query)) {
             pstmt.setInt(1, n);
-            ResultSet rset = pstmt.executeQuery();
-            while (rset.next()) {
-                countries.add(extractCountry(rset));
+            try (ResultSet rset = pstmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(extractCountry(rset));
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Error fetching top N world countries: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error fetching top N world countries: " + e.getMessage());
+        }
+        return countries;
+    }
+
+    /**
+     * Requirement 5: The top N populated countries in a continent.
+     */
+    public List<Country> getTopNCountriesContinent(String continent, int n) {
+        List<Country> countries = new ArrayList<>();
+        String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Continent = ? ORDER BY Population DESC LIMIT ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(query)) {
+            pstmt.setString(1, continent);
+            pstmt.setInt(2, n);
+            try (ResultSet rset = pstmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(extractCountry(rset));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching top N continent countries: " + e.getMessage());
+        }
+        return countries;
+    }
+
+    /**
+     * Requirement 6: The top N populated countries in a region.
+     */
+    public List<Country> getTopNCountriesRegion(String region, int n) {
+        List<Country> countries = new ArrayList<>();
+        String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Region = ? ORDER BY Population DESC LIMIT ?";
+
+        try (PreparedStatement pstmt = con.prepareStatement(query)) {
+            pstmt.setString(1, region);
+            pstmt.setInt(2, n);
+            try (ResultSet rset = pstmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(extractCountry(rset));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching top N region countries: " + e.getMessage());
         }
         return countries;
     }
@@ -102,23 +144,5 @@ public class CountryRepository {
                 rset.getLong("Population"),
                 rset.getString("Capital")
         );
-    }
-
-    /**
-     * Prints the country report list.
-     */
-    public void printCountryReport(List<Country> countries) {
-        if (countries == null || countries.isEmpty()) {
-            System.out.println("No countries found.");
-            return;
-        }
-        System.out.println(String.format("| %-5s | %-25s | %-15s | %-25s | %-15s | %-20s |",
-                "Code", "Name", "Continent", "Region", "Population", "Capital"));
-        System.out.println("-".repeat(120));
-        for (Country country : countries) {
-            if (country != null) {
-                System.out.println(country.toString());
-            }
-        }
     }
 }

@@ -3,16 +3,10 @@ package com.napier.devops;
 import com.napier.devops.config.DatabaseHandler;
 import com.napier.devops.model.CapitalCity;
 import com.napier.devops.model.City;
-import com.napier.devops.model.Country;
 import com.napier.devops.model.Language;
 import com.napier.devops.model.Population;
-import com.napier.devops.reportformat.CapitalCityReport;
-import com.napier.devops.reportformat.CityReport;
-import com.napier.devops.reportformat.CountryReport;
-import com.napier.devops.reportformat.LanguageReport;
-import com.napier.devops.repository.CityRepository;
-import com.napier.devops.repository.CountryRepository;
-import com.napier.devops.repository.LanguageRepository;
+import com.napier.devops.reportformat.*;
+import com.napier.devops.repository.*;
 
 import java.sql.Connection;
 import java.util.List;
@@ -59,14 +53,30 @@ public class App {
                     ", District: " + targetDistrict +
                     ", Top N: " + topN);
 
-            // --- City Reports (Req 7 - 11) ---
-            CityRepository cityRepo = new CityRepository(con);
+            // --- Country Reports (Req 1 - 6) ---
             CountryRepository countryRepo = new CountryRepository(con);
 
-            // Country Reports (Your feature implementation)
-            System.out.println("\n--- Country Report: All Countries in the World ---");
-            List<Country> worldCountries = countryRepo.getAllCountriesWorld();
-            CountryReport.print(worldCountries);
+            System.out.println("\n--- Req 1: All Countries in the World ---");
+            CountryReport.print(countryRepo.getAllCountriesWorld());
+
+            System.out.println("\n--- Req 2: All Countries in Continent (" + targetContinent + ") ---");
+            CountryReport.print(countryRepo.getAllCountriesContinent(targetContinent));
+
+            System.out.println("\n--- Req 3: All Countries in Region (" + targetRegion + ") ---");
+            CountryReport.print(countryRepo.getAllCountriesRegion(targetRegion));
+
+            System.out.println("\n--- Req 4: Top " + topN + " Countries in the World ---");
+            CountryReport.print(countryRepo.getTopNCountriesWorld(topN));
+
+            // Req 5 & 6 (Newly Added)
+            System.out.println("\n--- Req 5: Top " + topN + " Countries in Continent (" + targetContinent + ") ---");
+            CountryReport.print(countryRepo.getTopNCountriesContinent(targetContinent, topN));
+
+            System.out.println("\n--- Req 6: Top " + topN + " Countries in Region (" + targetRegion + ") ---");
+            CountryReport.print(countryRepo.getTopNCountriesRegion(targetRegion, topN));
+
+            // --- City Reports (Req 7 - 11) ---
+            CityRepository cityRepo = new CityRepository(con);
 
             System.out.println("\n--- Req 7: All Cities in the World ---");
             List<City> worldCities = cityRepo.getAllCitiesWorld();

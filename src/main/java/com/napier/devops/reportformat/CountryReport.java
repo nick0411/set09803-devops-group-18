@@ -6,7 +6,7 @@ import java.util.List;
 public class CountryReport {
 
     /**
-     * Prints a formatted table report for a list of countries.
+     * Prints a formatted table report for a list of countries with a record counter footer.
      *
      * @param countries List of Country objects to display
      */
@@ -26,10 +26,11 @@ public class CountryReport {
         for (Country country : countries) {
             if (country != null) {
                 System.out.println(country.toString());
+                System.out.println(border);
             }
         }
 
+        System.out.printf("| Total Number of Records: %-91d |%n", countries.size());
         System.out.println(border);
-        System.out.println("Total Countries Displayed: " + countries.size() + "\n");
     }
 }
