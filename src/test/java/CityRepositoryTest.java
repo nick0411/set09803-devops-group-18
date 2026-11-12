@@ -1,163 +1,135 @@
-import com.napier.devops.config.DatabaseHandler;
+
 import com.napier.devops.model.City;
 import com.napier.devops.repository.CityRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class CityRepositoryTest {
 
-    @Test
-    public void testTopNCitiesWorld() {
-        DatabaseHandler db = new DatabaseHandler();
-        db.connect("localhost:3306");
+    private Connection con;
+    private PreparedStatement stmt;
+    private ResultSet rset;
+    private CityRepository repo;
 
-        try {
-            Connection con = db.getConnection();
-            assertNotNull(con, "Database connection failed");
+    @BeforeEach
+    public void setUp() throws Exception {
+        con = mock(Connection.class);
+        stmt = mock(PreparedStatement.class);
+        rset = mock(ResultSet.class);
 
-            CityRepository repo = new CityRepository(con);
-            List<City> cities = repo.getTopNCitiesWorld(5);
+        when(con.prepareStatement(anyString())).thenReturn(stmt);
+        when(stmt.executeQuery()).thenReturn(rset);
 
-            assertEquals(5, cities.size(),
-                    "Expected exactly 5 cities");
+        repo = new CityRepository(con);
+    }
 
-            for (int i = 1; i < cities.size(); i++) {
-                assertTrue(
-                        cities.get(i - 1).getPopulation()
-                                >= cities.get(i).getPopulation(),
-                        "Cities should be sorted by population"
-                );
-            }
-        } finally {
-            db.disconnect();
-        }
+    private void mockTwoCities() throws Exception {
+        when(rset.next()).thenReturn(true, true, false);
 
+        when(rset.getString("Name"))
+                .thenReturn("Yangon", "Mandalay");
+        when(rset.getString("CountryCode"))
+                .thenReturn("MMR", "MMR");
+        when(rset.getString("District"))
+                .thenReturn("Yangon", "Mandalay");
+        when(rset.getLong("Population"))
+                .thenReturn(3361700L, 885300L);
+    }
+
+    private void assertCityResults(List<City> cities) {
+        assertEquals(2, cities.size());
+        assertEquals("Yangon", cities.get(0).getName());
+        assertEquals("Mandalay", cities.get(1).getName());
+        assertEquals("MMR", cities.get(0).getCountry());
+        assertTrue(cities.get(0).getPopulation()
+                >= cities.get(1).getPopulation());
     }
 
     @Test
-    public void testTopNCitiesContinent() {
-        DatabaseHandler db = new DatabaseHandler();
-        db.connect("localhost:3306");
+    public void testTopNCitiesWorld() throws Exception {
+        mockTwoCities();
 
-        try {
-            Connection con = db.getConnection();
-            assertNotNull(con, "Database connection failed");
+        List<City> cities = repo.getTopNCitiesWorld(5);
 
-            CityRepository repo = new CityRepository(con);
-            List<City> cities = repo.getTopNCitiesContinent("Asia", 5);
-
-            assertEquals(5, cities.size(),
-                    "Expected exactly 5 cities in Asia");
-
-            for (int i = 1; i < cities.size(); i++) {
-                assertTrue(
-                        cities.get(i - 1).getPopulation()
-                                >= cities.get(i).getPopulation(),
-                        "Cities should be sorted by population"
-                );
-            }
-        } finally {
-            db.disconnect();
-        }
-    }
-
-
-    @Test
-    public void testTopNCitiesRegion() {
-        DatabaseHandler db = new DatabaseHandler();
-        db.connect("localhost:3306");
-
-        try {
-            Connection con = db.getConnection();
-            assertNotNull(con, "Database connection failed");
-
-            CityRepository repo = new CityRepository(con);
-            List<City> cities =
-                    repo.getTopNCitiesRegion("Southeast Asia", 5);
-
-            assertEquals(5, cities.size(),
-                    "Expected exactly 5 cities in Southeast Asia");
-
-            for (int i = 1; i < cities.size(); i++) {
-                assertTrue(
-                        cities.get(i - 1).getPopulation()
-                                >= cities.get(i).getPopulation(),
-                        "Cities should be sorted by population"
-                );
-            }
-        } finally {
-            db.disconnect();
-        }
+        assertCityResults(cities);
+        verify(stmt).setInt(1, 5);
+        verify(con).prepareStatement(
+                contains("ORDER BY Population DESC"));
     }
 
     @Test
-    public void testTopNCitiesCountry() {
-        DatabaseHandler db = new DatabaseHandler();
-        db.connect("localhost:3306");
+    public void testTopNCitiesContinent() throws Exception {
+        mockTwoCities();
 
-        try {
-            Connection con = db.getConnection();
-            assertNotNull(con, "Database connection failed");
+        List<City> cities =
+                repo.getTopNCitiesContinent("Asia", 5);
 
-            CityRepository repo = new CityRepository(con);
-            List<City> cities = repo.getTopNCitiesCountry("MMR", 5);
-
-            assertEquals(5, cities.size(),
-                    "Expected exactly 5 cities in Myanmar");
-
-            for (int i = 0; i < cities.size(); i++) {
-                assertEquals("MMR", cities.get(i).getCountry(),
-                        "Every city should belong to Myanmar");
-
-                if (i > 0) {
-                    assertTrue(
-                            cities.get(i - 1).getPopulation()
-                                    >= cities.get(i).getPopulation(),
-                            "Cities should be sorted by population"
-                    );
-                }
-            }
-        } finally {
-            db.disconnect();
-        }
+        assertCityResults(cities);
+        verify(stmt).setString(1, "Asia");
+        verify(stmt).setInt(2, 5);
+        verify(con).prepareStatement(
+                contains("country.Continent = ?"));
     }
 
     @Test
-    public void testTopNCitiesDistrict() {
-        DatabaseHandler db = new DatabaseHandler();
-        db.connect("localhost:3306");
+    public void testTopNCitiesRegion() throws Exception {
+        mockTwoCities();
 
-        try {
-            Connection con = db.getConnection();
-            assertNotNull(con, "Database connection failed");
+        List<City> cities =
+                repo.getTopNCitiesRegion("Southeast Asia", 5);
 
-            CityRepository repo = new CityRepository(con);
-            List<City> cities =
-                    repo.getTopNCitiesDistrict("California", 5);
-
-            assertEquals(5, cities.size(),
-                    "Expected exactly 5 cities in California");
-
-            for (int i = 0; i < cities.size(); i++) {
-                assertEquals("California", cities.get(i).getDistrict(),
-                        "Every city should belong to California");
-
-                if (i > 0) {
-                    assertTrue(
-                            cities.get(i - 1).getPopulation()
-                                    >= cities.get(i).getPopulation(),
-                            "Cities should be sorted by population"
-                    );
-                }
-            }
-        } finally {
-            db.disconnect();
-        }
+        assertCityResults(cities);
+        verify(stmt).setString(1, "Southeast Asia");
+        verify(stmt).setInt(2, 5);
+        verify(con).prepareStatement(
+                contains("country.Region = ?"));
     }
 
+    @Test
+    public void testTopNCitiesCountry() throws Exception {
+        mockTwoCities();
 
+        List<City> cities =
+                repo.getTopNCitiesCountry("MMR", 5);
+
+        assertCityResults(cities);
+        verify(stmt).setString(1, "MMR");
+        verify(stmt).setInt(2, 5);
+        verify(con).prepareStatement(
+                contains("WHERE CountryCode = ?"));
+    }
+
+    @Test
+    public void testTopNCitiesDistrict() throws Exception {
+        mockTwoCities();
+
+        List<City> cities =
+                repo.getTopNCitiesDistrict("Yangon", 5);
+
+        assertCityResults(cities);
+        verify(stmt).setString(1, "Yangon");
+        verify(stmt).setInt(2, 5);
+        verify(con).prepareStatement(
+                contains("WHERE District = ?"));
+    }
+
+    @Test
+    public void testEmptyResults() throws Exception {
+        when(rset.next()).thenReturn(false);
+
+        List<City> cities = repo.getTopNCitiesWorld(5);
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+        verify(stmt).setInt(1, 5);
+    }
 }
