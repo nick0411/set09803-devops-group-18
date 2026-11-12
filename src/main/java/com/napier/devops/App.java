@@ -42,8 +42,8 @@ public class App {
             if (args.length > 5 && args[5] != null && !args[5].isEmpty()) {
                 try {
                     topN = Integer.parseInt(args[5]);
+                    System.err.println("Invalid Top N argument provided, defaulting to 5.");;
                 } catch (NumberFormatException e) {
-                    System.err.println("Invalid Top N argument provided, defaulting to 10.");
                 }
             }
 
