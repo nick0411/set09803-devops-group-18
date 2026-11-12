@@ -26,6 +26,7 @@ services:
         condition: service_healthy
     networks:
       - devops-net
+    command: ["Asia", "Southeast Asia", "Myanmar", "England", "5"]
 
 # Dedicated Bridge Network
 networks:

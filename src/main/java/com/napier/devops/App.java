@@ -24,127 +24,131 @@ public class App {
 
         DatabaseHandler dbHandler = new DatabaseHandler();
 
+        // 1. Handle Database Location from args[0] (Docker ENTRYPOINT passes "db:3306")
         String dbLocation;
-
-        if (args.length > 0) {
-            dbLocation = args[0]; // Used inside Docker
+        if (args.length > 0 && args[0] != null && !args[0].isEmpty()) {
+            dbLocation = args[0];
         } else {
             dbLocation = "localhost:3306"; // Default for local IntelliJ testing
         }
+
+        System.out.println("Connecting to database at: " + dbLocation);
         dbHandler.connect(dbLocation);
 
         Connection con = dbHandler.getConnection();
 
         if (con != null) {
+            // 2. Parse dynamic report parameters from docker-compose command array with safe fallbacks
+            // args[0] = db location
+            String targetContinent = (args.length > 1 && args[1] != null && !args[1].isEmpty()) ? args[1] : "Asia";
+            String targetRegion = (args.length > 2 && args[2] != null && !args[2].isEmpty()) ? args[2] : "Southeast Asia";
+            String targetCountry = (args.length > 3 && args[3] != null && !args[3].isEmpty()) ? args[3] : "Myanmar";
+            String targetDistrict = (args.length > 4 && args[4] != null && !args[4].isEmpty()) ? args[4] : "England";
+            int topN = 10;
+            if (args.length > 5 && args[5] != null && !args[5].isEmpty()) {
+                try {
+                    topN = Integer.parseInt(args[5]);
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid Top N argument provided, defaulting to 10.");
+                }
+            }
+
+            System.out.println("Runtime Parameters -> Continent: " + targetContinent +
+                    ", Region: " + targetRegion +
+                    ", Country: " + targetCountry +
+                    ", District: " + targetDistrict +
+                    ", Top N: " + topN);
+
+            // --- City Reports (Req 7 - 11) ---
             CityRepository cityRepo = new CityRepository(con);
 
-            // Req 7: All cities in the world (limiting to top 10 for clean sample output, or remove .limit() for all)
             System.out.println("\n--- Req 7: All Cities in the World ---");
             List<City> worldCities = cityRepo.getAllCitiesWorld();
             CityReport.print(worldCities);
 
-            // Req 8: All cities in a continent (e.g., Asia)
-            System.out.println("\n--- Req 8: All Cities in a Specific Continent ---");
-            List<City> continentCities = cityRepo.getAllCitiesContinent("Asia");
+            System.out.println("\n--- Req 8: All Cities in Continent (" + targetContinent + ") ---");
+            List<City> continentCities = cityRepo.getAllCitiesContinent(targetContinent);
             CityReport.print(continentCities);
 
-            // Req 9: All cities in a region (e.g., Southeast Asia)
-            System.out.println("\n--- Req 9: All Cities in a Specific Region ---");
-            List<City> regionCities = cityRepo.getAllCitiesRegion("Southeast Asia");
+            System.out.println("\n--- Req 9: All Cities in Region (" + targetRegion + ") ---");
+            List<City> regionCities = cityRepo.getAllCitiesRegion(targetRegion);
             CityReport.print(regionCities);
 
-            // Req 10: All cities in a country (e.g., Myanmar)
-            System.out.println("\n--- Req 10: All Cities in a Specific Country ---");
-            List<City> countryCities = cityRepo.getAllCitiesCountry("Myanmar");
+            System.out.println("\n--- Req 10: All Cities in Country (" + targetCountry + ") ---");
+            List<City> countryCities = cityRepo.getAllCitiesCountry(targetCountry);
             CityReport.print(countryCities);
 
-            // Req 11: All cities in a district (e.g., England)
-            System.out.println("\n--- Req 11: All Cities in a Specific District ---");
-            List<City> districtCities = cityRepo.getAllCitiesDistrict("England");
+            System.out.println("\n--- Req 11: All Cities in District (" + targetDistrict + ") ---");
+            List<City> districtCities = cityRepo.getAllCitiesDistrict(targetDistrict);
             CityReport.print(districtCities);
 
-            // Capital City Reports (Req 17 - 22)
+            // --- Capital City Reports (Req 17 - 22) ---
             CapitalCityRepository capitalRepo = new CapitalCityRepository(con);
 
-            // Req 17: All capital cities in the world
             System.out.println("\n--- Req 17: All Capital Cities in the World ---");
             List<CapitalCity> worldCapitals = capitalRepo.getAllCapitalsWorld();
             CapitalCityReport.print(worldCapitals);
 
-            // Req 18: All capital cities in a continent (e.g., Asia)
-            System.out.println("\n--- Req 18: All Capital Cities in a Continent ---");
-            List<CapitalCity> continentCapitals = capitalRepo.getAllCapitalsContinent("Asia");
+            System.out.println("\n--- Req 18: All Capital Cities in Continent (" + targetContinent + ") ---");
+            List<CapitalCity> continentCapitals = capitalRepo.getAllCapitalsContinent(targetContinent);
             CapitalCityReport.print(continentCapitals);
 
-            // Req 19: All capital cities in a region (e.g., Southeast Asia)
-            System.out.println("\n--- Req 19: All Capital Cities in a Region ---");
-            List<CapitalCity> regionCapitals = capitalRepo.getAllCapitalsRegion("Southeast Asia");
+            System.out.println("\n--- Req 19: All Capital Cities in Region (" + targetRegion + ") ---");
+            List<CapitalCity> regionCapitals = capitalRepo.getAllCapitalsRegion(targetRegion);
             CapitalCityReport.print(regionCapitals);
 
-            // Req 20: Top N populated capital cities in the world (e.g., Top 10)
-            System.out.println("\n--- Req 20: Top n Capital Cities in the World ---");
-            List<CapitalCity> topWorldCapitals = capitalRepo.getTopNCapitalsWorld(10);
+            System.out.println("\n--- Req 20: Top " + topN + " Capital Cities in the World ---");
+            List<CapitalCity> topWorldCapitals = capitalRepo.getTopNCapitalsWorld(topN);
             CapitalCityReport.print(topWorldCapitals);
 
-            // Req 21: Top N populated capital cities in a continent (e.g., Top 5 in Asia)
-            System.out.println("\n--- Req 21: Top n Capital Cities in a Continent ---");
-            List<CapitalCity> topContinentCapitals = capitalRepo.getTopNCapitalsContinent("Asia", 5);
+            System.out.println("\n--- Req 21: Top " + topN + " Capital Cities in Continent (" + targetContinent + ") ---");
+            List<CapitalCity> topContinentCapitals = capitalRepo.getTopNCapitalsContinent(targetContinent, topN);
             CapitalCityReport.print(topContinentCapitals);
 
-            // Req 22: Top N populated capital cities in a region (e.g., Top 5 in Southeast Asia)
-            System.out.println("\n--- Req 22: Top n Capital Cities in a region ---");
-            List<CapitalCity> topRegionCapitals = capitalRepo.getTopNCapitalsRegion("Southeast Asia", 5);
+            System.out.println("\n--- Req 22: Top " + topN + " Capital Cities in Region (" + targetRegion + ") ---");
+            List<CapitalCity> topRegionCapitals = capitalRepo.getTopNCapitalsRegion(targetRegion, topN);
             CapitalCityReport.print(topRegionCapitals);
 
-            // Population Reports (Req 23 - 31)
+            // --- Population Reports (Req 23 - 31) ---
             PopulationRepository populationRepo = new PopulationRepository(con);
 
-            // Req 23: Population living / not living in cities per Continent
             System.out.println("\n--- Req 23: Population Living / Not Living in Cities per Continent ---");
             List<Population> continentPop = populationRepo.getContinentPopulationReport();
             PopulationReport.print(continentPop);
 
-            // Req 24: Population living / not living in cities per Region
             System.out.println("\n--- Req 24: Population Living / Not Living in Cities per Region ---");
             List<Population> regionPop = populationRepo.getRegionPopulationReport();
             PopulationReport.print(regionPop);
 
-            // Req 25: Population living / not living in cities per Country
             System.out.println("\n--- Req 25: Population Living / Not Living in Cities per Country ---");
             List<Population> countryPop = populationRepo.getCountryPopulationReport();
             PopulationReport.print(countryPop);
 
-            // Req 26: Total population of the World
             System.out.println("\n--- Req 26: Total Population of the World ---");
             List<Population> worldTotal = populationRepo.getWorldTotalPopulation();
             PopulationReport.print(worldTotal);
 
-            // Req 27: Total population of each Continent
             System.out.println("\n--- Req 27: Total Population of each Continent ---");
             List<Population> continentTotal = populationRepo.getContinentTotalPopulation();
             PopulationReport.print(continentTotal);
 
-            // Req 28: Total population of each Region
             System.out.println("\n--- Req 28: Total Population of each Region ---");
             List<Population> regionTotal = populationRepo.getRegionTotalPopulation();
             PopulationReport.print(regionTotal);
 
-            // Req 29: Total population of each Country
             System.out.println("\n--- Req 29: Total Population of each Country ---");
             List<Population> countryTotal = populationRepo.getCountryTotalPopulation();
             PopulationReport.print(countryTotal);
 
-            // Req 30: Total population of each District
             System.out.println("\n--- Req 30: Total Population of each District ---");
             List<Population> districtTotal = populationRepo.getDistrictTotalPopulation();
             PopulationReport.print(districtTotal);
 
-            // Req 31: Total population of each City
             System.out.println("\n--- Req 31: Total Population of each City ---");
             List<Population> cityTotal = populationRepo.getCityTotalPopulation();
             PopulationReport.print(cityTotal);
 
-            // Req 32: Global Language Distribution Report
+            // --- Language Reports (Req 32) ---
             System.out.println("\n--- Req 32: Global Language Distribution ---");
             LanguageRepository languageRepo = new LanguageRepository(con);
             List<Language> languageReport = languageRepo.getGlobalLanguageReport();
