@@ -36,27 +36,27 @@ public class App {
             CityRepository cityRepo = new CityRepository(con);
 
             // Req 7: All cities in the world (limiting to top 10 for clean sample output, or remove .limit() for all)
-            System.out.println("\n--- Req 7: All Cities in the World (Top 10 Sample) ---");
+            System.out.println("\n--- Req 7: All Cities in the World ---");
             List<City> worldCities = cityRepo.getAllCitiesWorld();
             CityReport.print(worldCities);
 
             // Req 8: All cities in a continent (e.g., Asia)
-            System.out.println("\n--- Req 8: All Cities in Asia (Top 10 Sample) ---");
+            System.out.println("\n--- Req 8: All Cities in a Specific Continent ---");
             List<City> continentCities = cityRepo.getAllCitiesContinent("Asia");
             CityReport.print(continentCities);
 
             // Req 9: All cities in a region (e.g., Southeast Asia)
-            System.out.println("\n--- Req 9: All Cities in Southeast Asia (Top 10 Sample) ---");
+            System.out.println("\n--- Req 9: All Cities in a Specific Region ---");
             List<City> regionCities = cityRepo.getAllCitiesRegion("Southeast Asia");
             CityReport.print(regionCities);
 
             // Req 10: All cities in a country (e.g., Myanmar)
-            System.out.println("\n--- Req 10: All Cities in Myanmar ---");
+            System.out.println("\n--- Req 10: All Cities in a Specific Country ---");
             List<City> countryCities = cityRepo.getAllCitiesCountry("Myanmar");
             CityReport.print(countryCities);
 
             // Req 11: All cities in a district (e.g., England)
-            System.out.println("\n--- Req 11: All Cities in England District ---");
+            System.out.println("\n--- Req 11: All Cities in a Specific District ---");
             List<City> districtCities = cityRepo.getAllCitiesDistrict("England");
             CityReport.print(districtCities);
 

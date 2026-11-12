@@ -58,11 +58,11 @@ This repository contains a containerized Java 17 reporting application that proc
 | 4 | The top N populated countries in the world where N is provided by the user. | No |  |
 | 5 | The top N populated countries in a continent where N is provided by the user. | No |  |
 | 6 | The top N populated countries in a region where N is provided by the user. | No |  |
-| 7 | All the cities in the world organised by largest population to smallest. | No |  |
-| 8 | All the cities in a continent organised by largest population to smallest. | No |  |
-| 9 | All the cities in a region organised by largest population to smallest. | No |  |
-| 10 | All the cities in a country organised by largest population to smallest. | No |  |
-| 11 | All the cities in a district organised by largest population to smallest. | No |  |
+| 7 | All the cities in the world organised by largest population to smallest. | Yes |![req7_1.png](img/req7_1.png)![req7_2.png](img/req7_2.png)|
+| 8 | All the cities in a continent organised by largest population to smallest. | Yes |![req8_1.png](img/req8_1.png)![req8_2.png](img/req8_2.png)|
+| 9 | All the cities in a region organised by largest population to smallest. | Yes |![req9_1.png](img/req9_1.png)![req9_2.png](img/req9_2.png)|
+| 10 | All the cities in a country organised by largest population to smallest. | Yes |![req10_1.png](img/req10_1.png)![req10_2.png](img/req10_2.png)|
+| 11 | All the cities in a district organised by largest population to smallest. | Yes |![req11_1.png](img/req11_1.png)![req11_2.png](img/req11_2.png)|
 | 12 | The top N populated cities in the world where N is provided by the user. | No |  |
 | 13 | The top N populated cities in a continent where N is provided by the user. | No |  |
 | 14 | The top N populated cities in a region where N is provided by the user. | No |  |
