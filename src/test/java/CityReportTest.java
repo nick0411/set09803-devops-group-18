@@ -27,7 +27,7 @@ public class CityReportTest {
             System.setOut(new PrintStream(output, true,
                     StandardCharsets.UTF_8));
 
-            CityReport.printCityReport(cities);
+            CityReport.print(cities);
 
         } finally {
             System.setOut(originalOut);
