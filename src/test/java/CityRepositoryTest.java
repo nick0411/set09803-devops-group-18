@@ -94,19 +94,42 @@ public class CityRepositoryTest {
                 contains("country.Region = ?"));
     }
 
+
     @Test
     public void testTopNCitiesCountry() throws Exception {
-        mockTwoCities();
+        when(rset.next()).thenReturn(true, true, false);
+
+        when(rset.getString("CityName"))
+                .thenReturn("Yangon", "Mandalay");
+        when(rset.getString("CountryName"))
+                .thenReturn("Myanmar", "Myanmar");
+        when(rset.getString("District"))
+                .thenReturn("Yangon", "Mandalay");
+        when(rset.getLong("Population"))
+                .thenReturn(3361700L, 885300L);
 
         List<City> cities =
-                repo.getTopNCitiesCountry("MMR", 5);
+                repo.getTopNCitiesCountry("Myanmar", 5);
 
-        assertCityResults(cities);
-        verify(stmt).setString(1, "MMR");
+        assertEquals(2, cities.size());
+        assertEquals("Yangon", cities.get(0).getName());
+        assertEquals("Mandalay", cities.get(1).getName());
+        assertEquals("Myanmar", cities.get(0).getCountry());
+        assertEquals("Myanmar", cities.get(1).getCountry());
+        assertTrue(cities.get(0).getPopulation()
+                >= cities.get(1).getPopulation());
+
+        verify(stmt).setString(1, "Myanmar");
         verify(stmt).setInt(2, 5);
+
         verify(con).prepareStatement(
-                contains("WHERE CountryCode = ?"));
+                contains("JOIN country co ON ci.CountryCode = co.Code"));
+        verify(con).prepareStatement(
+                contains("WHERE co.Name = ?"));
+        verify(con).prepareStatement(
+                contains("ORDER BY ci.Population DESC LIMIT ?"));
     }
+
 
     @Test
     public void testTopNCitiesDistrict() throws Exception {

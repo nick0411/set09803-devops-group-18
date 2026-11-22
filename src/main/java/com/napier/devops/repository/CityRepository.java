@@ -229,20 +229,24 @@ public class CityRepository {
     }
 
     // Requirement 15: Top N cities in a country
-    public List<City> getTopNCitiesCountry(String countryCode, int n) {
+    public List<City> getTopNCitiesCountry(String countryName, int n) {
         List<City> cities = new ArrayList<>();
-        String sql = "SELECT Name, CountryCode, District, Population " +
-                "FROM city WHERE CountryCode = ? " +
-                "ORDER BY Population DESC LIMIT ?";
+
+        String sql = "SELECT ci.Name AS CityName, co.Name AS CountryName, " +
+                "ci.District, ci.Population " +
+                "FROM city ci JOIN country co ON ci.CountryCode = co.Code " +
+                "WHERE co.Name = ? " +
+                "ORDER BY ci.Population DESC LIMIT ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, countryCode);
+            stmt.setString(1, countryName);
             stmt.setInt(2, n);
+
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
                     cities.add(new City(
-                            rset.getString("Name"),
-                            rset.getString("CountryCode"),
+                            rset.getString("CityName"),
+                            rset.getString("CountryName"),
                             rset.getString("District"),
                             rset.getLong("Population")
                     ));
@@ -251,8 +255,10 @@ public class CityRepository {
         } catch (SQLException e) {
             System.err.println("Error retrieving top N cities by country: " + e.getMessage());
         }
+
         return cities;
     }
+
 
     // Requirement 16: Top N cities in a district
     public List<City> getTopNCitiesDistrict(String district, int n) {
