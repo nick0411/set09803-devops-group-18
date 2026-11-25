@@ -1,4 +1,4 @@
-name: CI Build & Integration Test
+name: CI Build and Integration Test
 
 on:
   push:
@@ -6,16 +6,20 @@ on:
   pull_request:
     branches: [ "master", "develop" ]
 
+permissions:
+  contents: read
+
 jobs:
-  build:
-    name: Build and Verify Multi-Container Setup
-    runs-on: ubuntu-22.04
+
+  # 1. Unit tests (no database needed)
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -24,8 +28,129 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn clean package
-        
-      - name: Run Docker Compose Integration
-        run: docker compose up --build --abort-on-container-exit
+      # Runs every test except the ones whose name ends in IntegrationTest
+      - name: Run unit tests
+        run: mvn --batch-mode test '-Dtest=!*IntegrationTest'
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: target/surefire-reports
+
+  # 2. Integration tests (MySQL in Docker) and coverage
+  integration-tests:
+    name: Integration tests
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # Start only the database service ('db'), then wait until the world data is loaded
+      - name: Start MySQL
+        run: docker compose up -d db
+
+      - name: Wait for MySQL
+        env:
+          MYSQL_CONTAINER: world-db
+          DB_USER: root
+          DB_PASSWORD: rootpassword
+          DB_NAME: world
+        run: bash .github/scripts/wait-for-mysql.sh
+
+      # Runs every test (unit and integration) so the coverage report is complete
+      - name: Run all tests
+        env:
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_NAME: world
+          DB_USER: root
+          DB_PASSWORD: rootpassword
+        run: mvn --batch-mode test
+
+      # Sends the JaCoCo report to Codecov using your secret token
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+          if-no-files-found: ignore
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-reports
+          path: target/surefire-reports
+
+      - name: Show MySQL logs
+        if: failure()
+        run: docker compose logs db
+
+      - name: Stop MySQL
+        if: always()
+        run: docker compose down -v
+
+  # 3. Build the JAR, then build and run the Docker image end-to-end
+  build:
+    name: Build and Docker
+    needs: integration-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # The tests already ran in the earlier jobs
+      - name: Build self-contained JAR
+        run: mvn --batch-mode clean package -DskipTests
+
+      - name: Start MySQL
+        run: docker compose up -d db
+
+      - name: Wait for MySQL
+        env:
+          MYSQL_CONTAINER: world-db
+          DB_USER: root
+          DB_PASSWORD: rootpassword
+          DB_NAME: world
+        run: bash .github/scripts/wait-for-mysql.sh
+
+      # Builds the image, runs the application and fails if it exits with an error
+      - name: Build and run the Docker image
+        run: docker compose up --build --exit-code-from app app
+
+      - name: Show Docker logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v
