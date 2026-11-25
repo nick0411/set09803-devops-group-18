@@ -1,3 +1,4 @@
+package com.napier.devops.unitTests;
 
 import com.napier.devops.model.City;
 import com.napier.devops.repository.CityRepository;
@@ -35,10 +36,10 @@ public class CityRepositoryTest {
     private void mockTwoCities() throws Exception {
         when(rset.next()).thenReturn(true, true, false);
 
-        when(rset.getString("Name"))
+        when(rset.getString("CityName"))
                 .thenReturn("Yangon", "Mandalay");
-        when(rset.getString("CountryCode"))
-                .thenReturn("MMR", "MMR");
+        when(rset.getString("CountryName"))
+                .thenReturn("Myanmar", "Myanmar");
         when(rset.getString("District"))
                 .thenReturn("Yangon", "Mandalay");
         when(rset.getLong("Population"))
@@ -49,7 +50,7 @@ public class CityRepositoryTest {
         assertEquals(2, cities.size());
         assertEquals("Yangon", cities.get(0).getName());
         assertEquals("Mandalay", cities.get(1).getName());
-        assertEquals("MMR", cities.get(0).getCountry());
+        assertEquals("Myanmar", cities.get(0).getCountry());
         assertTrue(cities.get(0).getPopulation()
                 >= cities.get(1).getPopulation());
     }
@@ -63,7 +64,7 @@ public class CityRepositoryTest {
         assertCityResults(cities);
         verify(stmt).setInt(1, 5);
         verify(con).prepareStatement(
-                contains("ORDER BY Population DESC"));
+                contains("ORDER BY ci.Population DESC LIMIT ?"));
     }
 
     @Test
@@ -77,7 +78,7 @@ public class CityRepositoryTest {
         verify(stmt).setString(1, "Asia");
         verify(stmt).setInt(2, 5);
         verify(con).prepareStatement(
-                contains("country.Continent = ?"));
+                contains("co.Continent = ?"));
     }
 
     @Test
@@ -91,34 +92,17 @@ public class CityRepositoryTest {
         verify(stmt).setString(1, "Southeast Asia");
         verify(stmt).setInt(2, 5);
         verify(con).prepareStatement(
-                contains("country.Region = ?"));
+                contains("co.Region = ?"));
     }
-
 
     @Test
     public void testTopNCitiesCountry() throws Exception {
-        when(rset.next()).thenReturn(true, true, false);
-
-        when(rset.getString("CityName"))
-                .thenReturn("Yangon", "Mandalay");
-        when(rset.getString("CountryName"))
-                .thenReturn("Myanmar", "Myanmar");
-        when(rset.getString("District"))
-                .thenReturn("Yangon", "Mandalay");
-        when(rset.getLong("Population"))
-                .thenReturn(3361700L, 885300L);
+        mockTwoCities();
 
         List<City> cities =
                 repo.getTopNCitiesCountry("Myanmar", 5);
 
-        assertEquals(2, cities.size());
-        assertEquals("Yangon", cities.get(0).getName());
-        assertEquals("Mandalay", cities.get(1).getName());
-        assertEquals("Myanmar", cities.get(0).getCountry());
-        assertEquals("Myanmar", cities.get(1).getCountry());
-        assertTrue(cities.get(0).getPopulation()
-                >= cities.get(1).getPopulation());
-
+        assertCityResults(cities);
         verify(stmt).setString(1, "Myanmar");
         verify(stmt).setInt(2, 5);
 
@@ -129,7 +113,6 @@ public class CityRepositoryTest {
         verify(con).prepareStatement(
                 contains("ORDER BY ci.Population DESC LIMIT ?"));
     }
-
 
     @Test
     public void testTopNCitiesDistrict() throws Exception {
@@ -142,7 +125,7 @@ public class CityRepositoryTest {
         verify(stmt).setString(1, "Yangon");
         verify(stmt).setInt(2, 5);
         verify(con).prepareStatement(
-                contains("WHERE District = ?"));
+                contains("WHERE ci.District = ?"));
     }
 
     @Test

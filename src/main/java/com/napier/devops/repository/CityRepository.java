@@ -153,16 +153,17 @@ public class CityRepository {
     // Requirement 12: Top N cities in the world
     public List<City> getTopNCitiesWorld(int n) {
         List<City> cities = new ArrayList<>();
-        String sql = "SELECT Name, CountryCode, District, Population " +
-                "FROM city ORDER BY Population DESC LIMIT ?";
+        String sql = "SELECT ci.Name AS CityName, co.Name AS CountryName, ci.District, ci.Population " +
+                "FROM city ci JOIN country co ON ci.CountryCode = co.Code " +
+                "ORDER BY ci.Population DESC LIMIT ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, n);
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
                     cities.add(new City(
-                            rset.getString("Name"),
-                            rset.getString("CountryCode"),
+                            rset.getString("CityName"),
+                            rset.getString("CountryName"),
                             rset.getString("District"),
                             rset.getLong("Population")
                     ));
@@ -177,10 +178,10 @@ public class CityRepository {
     // Requirement 13: Top N cities in a continent
     public List<City> getTopNCitiesContinent(String continent, int n) {
         List<City> cities = new ArrayList<>();
-        String sql = "SELECT city.Name, city.CountryCode, city.District, city.Population " +
-                "FROM city JOIN country ON city.CountryCode = country.Code " +
-                "WHERE country.Continent = ? " +
-                "ORDER BY city.Population DESC LIMIT ?";
+        String sql = "SELECT ci.Name AS CityName, co.Name AS CountryName, ci.District, ci.Population " +
+                "FROM city ci JOIN country co ON ci.CountryCode = co.Code " +
+                "WHERE co.Continent = ? " +
+                "ORDER BY ci.Population DESC LIMIT ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, continent);
@@ -188,8 +189,8 @@ public class CityRepository {
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
                     cities.add(new City(
-                            rset.getString("Name"),
-                            rset.getString("CountryCode"),
+                            rset.getString("CityName"),
+                            rset.getString("CountryName"),
                             rset.getString("District"),
                             rset.getLong("Population")
                     ));
@@ -204,10 +205,10 @@ public class CityRepository {
     // Requirement 14: Top N cities in a region
     public List<City> getTopNCitiesRegion(String region, int n) {
         List<City> cities = new ArrayList<>();
-        String sql = "SELECT city.Name, city.CountryCode, city.District, city.Population " +
-                "FROM city JOIN country ON city.CountryCode = country.Code " +
-                "WHERE country.Region = ? " +
-                "ORDER BY city.Population DESC LIMIT ?";
+        String sql = "SELECT ci.Name AS CityName, co.Name AS CountryName, ci.District, ci.Population " +
+                "FROM city ci JOIN country co ON ci.CountryCode = co.Code " +
+                "WHERE co.Region = ? " +
+                "ORDER BY ci.Population DESC LIMIT ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, region);
@@ -215,8 +216,8 @@ public class CityRepository {
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
                     cities.add(new City(
-                            rset.getString("Name"),
-                            rset.getString("CountryCode"),
+                            rset.getString("CityName"),
+                            rset.getString("CountryName"),
                             rset.getString("District"),
                             rset.getLong("Population")
                     ));
@@ -227,6 +228,7 @@ public class CityRepository {
         }
         return cities;
     }
+
 
     // Requirement 15: Top N cities in a country
     public List<City> getTopNCitiesCountry(String countryName, int n) {
@@ -259,13 +261,13 @@ public class CityRepository {
         return cities;
     }
 
-
     // Requirement 16: Top N cities in a district
     public List<City> getTopNCitiesDistrict(String district, int n) {
         List<City> cities = new ArrayList<>();
-        String sql = "SELECT Name, CountryCode, District, Population " +
-                "FROM city WHERE District = ? " +
-                "ORDER BY Population DESC LIMIT ?";
+        String sql = "SELECT ci.Name AS CityName, co.Name AS CountryName, ci.District, ci.Population " +
+                "FROM city ci JOIN country co ON ci.CountryCode = co.Code " +
+                "WHERE ci.District = ? " +
+                "ORDER BY ci.Population DESC LIMIT ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, district);
@@ -273,8 +275,8 @@ public class CityRepository {
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
                     cities.add(new City(
-                            rset.getString("Name"),
-                            rset.getString("CountryCode"),
+                            rset.getString("CityName"),
+                            rset.getString("CountryName"),
                             rset.getString("District"),
                             rset.getLong("Population")
                     ));
@@ -285,5 +287,4 @@ public class CityRepository {
         }
         return cities;
     }
-
 }

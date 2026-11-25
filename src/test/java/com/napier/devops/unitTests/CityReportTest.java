@@ -1,3 +1,5 @@
+package com.napier.devops.unitTests;
+
 import com.napier.devops.model.City;
 import com.napier.devops.reportformat.CityReport;
 import org.junit.jupiter.api.Test;
@@ -14,9 +16,9 @@ public class CityReportTest {
     @Test
     public void testPrintCityReport() {
         List<City> cities = List.of(
-                new City("Yangon", "MMR", "Rangoon [Yangon]",
+                new City("Yangon", "Myanmar", "Rangoon [Yangon]",
                         3361700),
-                new City("Mandalay", "MMR", "Mandalay",
+                new City("Mandalay", "Myanmar", "Mandalay",
                         885300)
         );
 

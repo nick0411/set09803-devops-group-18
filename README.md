@@ -48,7 +48,7 @@ This repository contains a containerized Java 17 reporting application that proc
 
 # Coursework Requirements Status
 
-    27 requirements out of 32 have been implemented (84.375%).
+    32 requirements out of 32 have been implemented (100%).
 
 | ID | Requirement Name | Met | Screenshot |
 | --- | --- | --- | --- |
@@ -63,11 +63,11 @@ This repository contains a containerized Java 17 reporting application that proc
 | 9 | All the cities in a region organised by largest population to smallest. | Yes |![req9_1.png](img/req9_1.png)![req9_2.png](img/req9_2.png)|
 | 10 | All the cities in a country organised by largest population to smallest. | Yes |![req10_1.png](img/req10_1.png)![req10_2.png](img/req10_2.png)|
 | 11 | All the cities in a district organised by largest population to smallest. | Yes |![req11_1.png](img/req11_1.png)![req11_2.png](img/req11_2.png)|
-| 12 | The top N populated cities in the world where N is provided by the user. | No |  |
-| 13 | The top N populated cities in a continent where N is provided by the user. | No |  |
-| 14 | The top N populated cities in a region where N is provided by the user. | No |  |
-| 15 | The top N populated cities in a country where N is provided by the user. | No |  |
-| 16 | The top N populated cities in a district where N is provided by the user. | No |  |
+| 12 | The top N populated cities in the world where N is provided by the user. | Yes |![req12.png](img/req12.png)|
+| 13 | The top N populated cities in a continent where N is provided by the user. | Yes |![req13.png](img/req13.png)|
+| 14 | The top N populated cities in a region where N is provided by the user. | Yes |![req14.png](img/req14.png)|
+| 15 | The top N populated cities in a country where N is provided by the user. | Yes |![req15.png](img/req15.png)|
+| 16 | The top N populated cities in a district where N is provided by the user. | Yes |![req16.png](img/req16.png)|
 | 17 | All the capital cities in the world organised by largest population to smallest. | Yes |![req17_1.png](img/req17_1.png)![req17_2.png](img/req17_2.png)|
 | 18 | All the capital cities in a continent organised by largest population to smallest. | Yes |![req18_1.png](img/req18_1.png)![req18_2.png](img/req18_2.png)|
 | 19 | All the capital cities in a region organised by largest to smallest. | Yes |![req19_1.png](img/req19_1.png)![req19_2.png](img/req19_2.png)|
