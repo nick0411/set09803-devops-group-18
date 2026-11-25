@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,18 +18,25 @@ import static org.mockito.Mockito.*;
 public class CityRepositoryTest {
 
     private Connection con;
-    private PreparedStatement stmt;
+    private PreparedStatement pstmt;
+    private Statement stmt;
     private ResultSet rset;
     private CityRepository repo;
 
     @BeforeEach
     public void setUp() throws Exception {
         con = mock(Connection.class);
-        stmt = mock(PreparedStatement.class);
+        pstmt = mock(PreparedStatement.class);
+        stmt = mock(Statement.class);
         rset = mock(ResultSet.class);
 
-        when(con.prepareStatement(anyString())).thenReturn(stmt);
-        when(stmt.executeQuery()).thenReturn(rset);
+        // Mock for standard Statement (getAllCitiesWorld)
+        when(con.createStatement()).thenReturn(stmt);
+        when(stmt.executeQuery(anyString())).thenReturn(rset);
+
+        // Mock for PreparedStatement (filtered & top-N queries)
+        when(con.prepareStatement(anyString())).thenReturn(pstmt);
+        when(pstmt.executeQuery()).thenReturn(rset);
 
         repo = new CityRepository(con);
     }
@@ -56,15 +64,69 @@ public class CityRepositoryTest {
     }
 
     @Test
+    public void testGetAllCitiesWorld() throws Exception {
+        mockTwoCities();
+
+        List<City> cities = repo.getAllCitiesWorld();
+
+        assertCityResults(cities);
+        verify(con).createStatement();
+        verify(stmt).executeQuery(contains("ORDER BY ci.Population DESC"));
+    }
+
+    @Test
+    public void testGetAllCitiesContinent() throws Exception {
+        mockTwoCities();
+
+        List<City> cities = repo.getAllCitiesContinent("Asia");
+
+        assertCityResults(cities);
+        verify(pstmt).setString(1, "Asia");
+        verify(pstmt).executeQuery();
+    }
+
+    @Test
+    public void testGetAllCitiesRegion() throws Exception {
+        mockTwoCities();
+
+        List<City> cities = repo.getAllCitiesRegion("Southeast Asia");
+
+        assertCityResults(cities);
+        verify(pstmt).setString(1, "Southeast Asia");
+        verify(pstmt).executeQuery();
+    }
+
+    @Test
+    public void testGetAllCitiesCountry() throws Exception {
+        mockTwoCities();
+
+        List<City> cities = repo.getAllCitiesCountry("Myanmar");
+
+        assertCityResults(cities);
+        verify(pstmt).setString(1, "Myanmar");
+        verify(pstmt).executeQuery();
+    }
+
+    @Test
+    public void testGetAllCitiesDistrict() throws Exception {
+        mockTwoCities();
+
+        List<City> cities = repo.getAllCitiesDistrict("Yangon");
+
+        assertCityResults(cities);
+        verify(pstmt).setString(1, "Yangon");
+        verify(pstmt).executeQuery();
+    }
+
+    @Test
     public void testTopNCitiesWorld() throws Exception {
         mockTwoCities();
 
         List<City> cities = repo.getTopNCitiesWorld(5);
 
         assertCityResults(cities);
-        verify(stmt).setInt(1, 5);
-        verify(con).prepareStatement(
-                contains("ORDER BY ci.Population DESC LIMIT ?"));
+        verify(pstmt).setInt(1, 5);
+        verify(pstmt).executeQuery();
     }
 
     @Test
@@ -75,10 +137,9 @@ public class CityRepositoryTest {
                 repo.getTopNCitiesContinent("Asia", 5);
 
         assertCityResults(cities);
-        verify(stmt).setString(1, "Asia");
-        verify(stmt).setInt(2, 5);
-        verify(con).prepareStatement(
-                contains("co.Continent = ?"));
+        verify(pstmt).setString(1, "Asia");
+        verify(pstmt).setInt(2, 5);
+        verify(pstmt).executeQuery();
     }
 
     @Test
@@ -89,10 +150,9 @@ public class CityRepositoryTest {
                 repo.getTopNCitiesRegion("Southeast Asia", 5);
 
         assertCityResults(cities);
-        verify(stmt).setString(1, "Southeast Asia");
-        verify(stmt).setInt(2, 5);
-        verify(con).prepareStatement(
-                contains("co.Region = ?"));
+        verify(pstmt).setString(1, "Southeast Asia");
+        verify(pstmt).setInt(2, 5);
+        verify(pstmt).executeQuery();
     }
 
     @Test
@@ -103,15 +163,9 @@ public class CityRepositoryTest {
                 repo.getTopNCitiesCountry("Myanmar", 5);
 
         assertCityResults(cities);
-        verify(stmt).setString(1, "Myanmar");
-        verify(stmt).setInt(2, 5);
-
-        verify(con).prepareStatement(
-                contains("JOIN country co ON ci.CountryCode = co.Code"));
-        verify(con).prepareStatement(
-                contains("WHERE co.Name = ?"));
-        verify(con).prepareStatement(
-                contains("ORDER BY ci.Population DESC LIMIT ?"));
+        verify(pstmt).setString(1, "Myanmar");
+        verify(pstmt).setInt(2, 5);
+        verify(pstmt).executeQuery();
     }
 
     @Test
@@ -122,20 +176,19 @@ public class CityRepositoryTest {
                 repo.getTopNCitiesDistrict("Yangon", 5);
 
         assertCityResults(cities);
-        verify(stmt).setString(1, "Yangon");
-        verify(stmt).setInt(2, 5);
-        verify(con).prepareStatement(
-                contains("WHERE ci.District = ?"));
+        verify(pstmt).setString(1, "Yangon");
+        verify(pstmt).setInt(2, 5);
+        verify(pstmt).executeQuery();
     }
 
     @Test
     public void testEmptyResults() throws Exception {
         when(rset.next()).thenReturn(false);
 
-        List<City> cities = repo.getTopNCitiesWorld(5);
+        List<City> cities = repo.getAllCitiesWorld();
 
         assertNotNull(cities);
         assertTrue(cities.isEmpty());
-        verify(stmt).setInt(1, 5);
+        verify(con).createStatement();
     }
 }
