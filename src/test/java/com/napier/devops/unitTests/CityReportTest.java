@@ -46,4 +46,25 @@ public class CityReportTest {
         assertTrue(result.contains("3,361,700"));
         assertTrue(result.contains("885,300"));
     }
+
+    @Test
+    public void testPrintEmptyCityReport() {
+
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try {
+            System.setOut(new PrintStream(output, true,
+                    StandardCharsets.UTF_8));
+
+            CityReport.print(List.of());
+
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String result = output.toString(StandardCharsets.UTF_8);
+
+        assertTrue(result.contains("No city data available or database connection failed."));
+    }
 }
