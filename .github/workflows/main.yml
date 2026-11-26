@@ -1,4 +1,4 @@
-name: CI Build and Integration Test
+name: CI Build
 
 on:
   push:
@@ -11,7 +11,6 @@ permissions:
 
 jobs:
 
-  # 1. Unit tests (no database needed)
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
@@ -28,7 +27,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Runs every test except the ones whose name ends in IntegrationTest
       - name: Run unit tests
         run: mvn --batch-mode test '-Dtest=!*IntegrationTest'
 
@@ -39,7 +37,6 @@ jobs:
           name: unit-test-reports
           path: target/surefire-reports
 
-  # 2. Integration tests (MySQL in Docker) and coverage
   integration-tests:
     name: Integration tests
     needs: unit-tests
@@ -57,7 +54,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Start only the database service ('db'), then wait until the world data is loaded
       - name: Start MySQL
         run: docker compose up -d db
 
@@ -69,7 +65,6 @@ jobs:
           DB_NAME: world
         run: bash .github/scripts/wait-for-mysql.sh
 
-      # Runs every test (unit and integration) so the coverage report is complete
       - name: Run all tests
         env:
           DB_HOST: localhost
@@ -79,7 +74,6 @@ jobs:
           DB_PASSWORD: rootpassword
         run: mvn --batch-mode test
 
-      # Sends the JaCoCo report to Codecov using your secret token
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
         with:
@@ -110,7 +104,6 @@ jobs:
         if: always()
         run: docker compose down -v
 
-  # 3. Build the JAR, then build and run the Docker image end-to-end
   build:
     name: Build and Docker
     needs: integration-tests
@@ -128,7 +121,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # The tests already ran in the earlier jobs
       - name: Build self-contained JAR
         run: mvn --batch-mode clean package -DskipTests
 
@@ -143,7 +135,6 @@ jobs:
           DB_NAME: world
         run: bash .github/scripts/wait-for-mysql.sh
 
-      # Builds the image, runs the application and fails if it exits with an error
       - name: Build and run the Docker image
         run: docker compose up --build --exit-code-from app app
 
