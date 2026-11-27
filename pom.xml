@@ -88,6 +88,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.16</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/napier/devops/App.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
