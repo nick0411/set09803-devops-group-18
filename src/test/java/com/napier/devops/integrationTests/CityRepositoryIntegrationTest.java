@@ -81,7 +81,7 @@ class CityRepositoryIntegrationTest {
     @Test
     void testGetAllCitiesDistrict() {
         if (con == null) return;
-        List<City> cities = new CityRepository(con).getAllCitiesDistrict("Yangon");
+        List<City> cities = new CityRepository(con).getAllCitiesDistrict("England");
         assertNotNull(cities);
         assertFalse(cities.isEmpty());
     }
@@ -133,7 +133,7 @@ class CityRepositoryIntegrationTest {
     void testGetTopNCitiesDistrict() {
         if (con == null) return;
         int n = 2;
-        List<City> cities = new CityRepository(con).getTopNCitiesDistrict("Yangon", n);
+        List<City> cities = new CityRepository(con).getTopNCitiesDistrict("England", n);
         assertNotNull(cities);
         assertTrue(cities.size() <= n);
     }
