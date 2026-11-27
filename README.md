@@ -4,6 +4,7 @@
 * Develop Build Status ![Develop](https://img.shields.io/github/actions/workflow/status/nick0411/set09803-devops-group-18/main.yml?branch=develop)
 * License [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 * Release ![Release](https://img.shields.io/github/v/release/nick0411/set09803-devops-group-18?color=grey)
+* [![codecov](https://codecov.io/gh/nick0411/set09803-devops-group-18/graph/badge.svg?token=GVG7F9CF1K)](https://codecov.io/gh/nick0411/set09803-devops-group-18)
 
 
 ## Project Overview
@@ -87,10 +88,10 @@ This repository contains a containerized Java 17 reporting application that proc
 
 | Matriculation Number | Code Review 1 | Code Review 2 |
 | :--- | :--- | :--- |
-| 40841082 | 17 | - |
-| 40841050 | 17 | - |
-| 40841051 | 17 | - |
-| 40840488 | 17 | - |
-| 40843780 | 17 | - |
-| 40841049 | 15 | - |
-| **Total** | **100** | **-** |
+| 40841082 | 17 | 17 |
+| 40841050 | 17 | 17 |
+| 40841051 | 17 | 17 |
+| 40840488 | 17 | 17 |
+| 40843780 | 17 | 17 |
+| 40841049 | 15 | 15 |
+| **Total** | **100** | **100** |
